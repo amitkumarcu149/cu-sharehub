@@ -1,274 +1,351 @@
 index.html
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CU ShareHub - P2P Campus Resource Sharing</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CU ShareHub | Authenticated P2P Campus Resource Hub</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#070f0b',
+              surface: '#0f1d16',
+              card: '#14271f',
+              border: '#1f3d30',
+              accent: '#a3e635',       /* Electric lime */
+              accentHover: '#84cc16',
+              muted: '#7a9e8d'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          }
         }
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-        }
-        header {
-            background: #1e3c72;
-            background: linear-gradient(to right, #2a5298, #1e3c72);
-            color: white;
-            padding: 1.5rem 2rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-        header p {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        .search-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .search-section input, .search-section select {
-            flex: 1;
-            min-width: 200px;
-            padding: 0.8rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        .add-resource-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-        }
-        .add-resource-card h2 {
-            margin-bottom: 1rem;
-            color: #1e3c72;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .form-grid input, .form-grid select, .form-grid textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        .btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-        .btn:hover {
-            background-color: #218838;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .card .badge {
-            align-self: flex-start;
-            background: #e1f0ff;
-            color: #0066cc;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 0.8rem;
-        }
-        .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        .card p {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-        .card .contact {
-            margin-top: auto;
-            padding-top: 0.8rem;
-            border-top: 1px solid #eee;
-            font-size: 0.9rem;
-            color: #333;
-            font-weight: bold;
-        }
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 3rem;
-            background: #333;
-            color: white;
-        }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070f0b;
+      color: #e5e7eb;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glow-lime {
+      box-shadow: 0 0 35px -8px rgba(163, 230, 53, 0.35);
+    }
+    .badge-blur {
+      background: rgba(15, 29, 22, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body>
+<body class="selection:bg-brand-accent selection:text-black pb-24 md:pb-12">
 
-    <header>
-        <h1>CU ShareHub</h1>
-        <p>Peer-to-Peer Campus Resource Sharing Platform</p>
-    </header>
+  <!-- Security Top Announcement Bar -->
+  <div class="w-full bg-brand-surface/90 border-b border-brand-border py-2 px-4 text-xs flex justify-between items-center text-gray-300">
+    <div class="flex items-center gap-2 truncate">
+      <span class="inline-block w-2 h-2 rounded-full bg-brand-accent animate-ping flex-shrink-0"></span>
+      <span class="truncate"><strong class="text-white">Chandigarh University &bull; Secure Auth Active</strong> (@cumail.in Required)</span>
+    </div>
+    <div class="hidden sm:flex items-center gap-3 text-[11px] text-gray-400">
+      <span class="flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3 text-brand-accent"></i> Contact Details Protected</span>
+      <span>&bull;</span>
+      <span>DPDP Act 2023 Compliant</span>
+    </div>
+  </div>
 
-    <div class="container">
-        <!-- Add Resource Form -->
-        <div class="add-resource-card">
-            <h2>Share a Resource</h2>
-            <form id="resourceForm">
-                <div class="form-grid">
-                    <input type="text" id="title" placeholder="Title (e.g. DBMS Notes, Drafter)" required>
-                    <select id="category" required>
-                        <option value="">Select Category</option>
-                        <option value="Notes">Notes / PDFs</option>
-                        <option value="Books">Books</option>
-                        <option value="Tools">Lab Tools / Instruments</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <input type="text" id="contact" placeholder="Contact Info (Phone / WhatsApp)" required>
-                </div>
-                <textarea id="description" rows="2" placeholder="Short description..." required style="margin-bottom: 1rem;"></textarea>
-                <button type="submit" class="btn">Share Item</button>
-            </form>
+  <!-- Header Section -->
+  <header class="sticky top-2 sm:top-4 z-40 px-3 sm:px-6 max-w-7xl mx-auto">
+    <nav class="badge-blur border border-brand-border rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shadow-2xl">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-accent flex items-center justify-center text-brand-dark font-black text-base font-display">
+          ⚡
+        </div>
+        <div>
+          <span class="font-display font-bold text-base sm:text-lg tracking-tight text-white block leading-none">CU<span class="text-brand-accent">SHARE</span></span>
+          <span class="text-[9px] uppercase tracking-widest text-brand-muted block font-medium">Campus Secure Portal</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center gap-1 bg-black/40 rounded-full p-1 border border-brand-border/60 text-xs font-medium">
+        <a href="#hero" class="px-4 py-1.5 rounded-full text-white bg-brand-card hover:text-brand-accent transition">Overview</a>
+        <a href="#catalog" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition">Inventory</a>
+        <a href="#lifecycle" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition">Security Protocol</a>
+        <a href="#team" class="px-4 py-1.5 rounded-full text-gray-300 hover:text-white transition">Project Team</a>
+      </div>
+
+      <!-- Action Cluster & Auth Widget -->
+      <div class="flex items-center gap-2">
+        <!-- Trust Score Button -->
+        <button onclick="openTrustModal()" class="flex items-center gap-1.5 bg-brand-card hover:bg-brand-border border border-brand-border px-3 py-1.5 rounded-full text-xs transition">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-accent"></i>
+          <span class="text-gray-300 hidden sm:inline">Trust:</span>
+          <span id="navTrustScore" class="font-bold text-brand-accent">98</span>
+        </button>
+
+        <!-- Active Loans -->
+        <button onclick="openLoansDrawer()" class="relative p-2 rounded-full bg-brand-card border border-brand-border hover:border-brand-accent text-gray-300 transition" title="My Active Loans">
+          <i data-lucide="backpack" class="w-4 h-4 text-white"></i>
+          <span id="activeLoansCountBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-accent text-brand-dark text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <!-- User Profile/Login Switcher -->
+        <div id="authHeaderWidget">
+          <!-- Populated by JS (Login Btn or User Badge) -->
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="relative pt-6 sm:pt-10 pb-12 px-4 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      
+      <!-- Left Hero Text -->
+      <div class="lg:col-span-7 space-y-4 sm:space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-xs font-bold uppercase tracking-wider">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Verified Students & Faculty Only
         </div>
 
-        <!-- Search & Filter -->
-        <div class="search-section">
-            <input type="text" id="searchInput" placeholder="Search resources...">
-            <select id="filterCategory">
-                <option value="All">All Categories</option>
-                <option value="Notes">Notes / PDFs</option>
-                <option value="Books">Books</option>
-                <option value="Tools">Lab Tools / Instruments</option>
-                <option value="Other">Other</option>
-            </select>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight leading-[1.1] text-white">
+          Authenticated <br class="hidden sm:block"/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent via-lime-200 to-white">Campus Peer Sharing.</span>
+        </h1>
+
+        <p class="text-gray-300 text-sm sm:text-base leading-relaxed max-w-xl">
+          Reserve high-end lab equipment safely. Contact numbers and personal identifiers are fully masked until your booking request is authorized by the equipment owner.
+        </p>
+
+        <!-- Dynamic Action CTA -->
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <a href="#catalog" class="bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold px-6 py-3 rounded-full text-xs sm:text-sm flex items-center gap-2 transition glow-lime">
+            <span>Browse Gear</span>
+            <i data-lucide="arrow-down" class="w-4 h-4"></i>
+          </a>
+          <button onclick="handleProtectedAction(() => openModal('addModal'))" class="bg-brand-card hover:bg-brand-surface border border-brand-border text-white font-semibold px-5 py-3 rounded-full text-xs sm:text-sm flex items-center gap-2 transition">
+            <i data-lucide="plus" class="w-4 h-4 text-brand-accent"></i>
+            <span>Share My Gear</span>
+          </button>
         </div>
 
-        <!-- Items Display -->
-        <h2 style="margin-bottom: 1rem; color: #1e3c72;">Available Resources</h2>
-        <div class="grid" id="resourceGrid">
-            <!-- Dynamic items will be added here -->
+        <!-- Privacy & Security Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-brand-border/60 text-xs text-gray-300">
+          <div class="flex items-center gap-2 bg-brand-surface/60 p-2 rounded-xl border border-brand-border/40">
+            <i data-lucide="user-check" class="w-4 h-4 text-brand-accent flex-shrink-0"></i>
+            <span class="truncate">@cumail Verified</span>
+          </div>
+          <div class="flex items-center gap-2 bg-brand-surface/60 p-2 rounded-xl border border-brand-border/40">
+            <i data-lucide="eye-off" class="w-4 h-4 text-brand-accent flex-shrink-0"></i>
+            <span class="truncate">Masked Contact</span>
+          </div>
+          <div class="flex items-center gap-2 bg-brand-surface/60 p-2 rounded-xl border border-brand-border/40">
+            <i data-lucide="qr-code" class="w-4 h-4 text-brand-accent flex-shrink-0"></i>
+            <span class="truncate">Token Handover</span>
+          </div>
+          <div class="flex items-center gap-2 bg-brand-surface/60 p-2 rounded-xl border border-brand-border/40">
+            <i data-lucide="award" class="w-4 h-4 text-brand-accent flex-shrink-0"></i>
+            <span class="truncate">Trust Verification</span>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Spotlight Card -->
+      <div class="lg:col-span-5">
+        <div class="bg-gradient-to-b from-brand-card to-brand-surface p-5 sm:p-6 rounded-3xl border border-brand-border relative overflow-hidden shadow-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-[10px] font-mono uppercase bg-brand-accent/20 text-brand-accent px-2.5 py-0.5 rounded-full border border-brand-accent/30 font-bold">Featured Lab Equipment</span>
+            <span class="text-xs text-gray-400 flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 text-brand-accent fill-brand-accent"></i> 4.9 Verified</span>
+          </div>
+
+          <div class="relative h-48 sm:h-56 rounded-2xl overflow-hidden bg-brand-dark mb-4 border border-brand-border/60">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Rigol DSO" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-2 bg-brand-dark/90 text-[11px] px-2.5 py-1 rounded-md text-brand-accent border border-brand-border">
+              EF-3 Electronics Lab
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-display font-bold text-white text-base sm:text-lg">Rigol DS1054Z Oscilloscope</h3>
+                <p class="text-xs text-gray-400">4-Channel 50MHz Scope</p>
+              </div>
+              <span class="text-xs font-bold text-brand-accent bg-brand-accent/10 px-2 py-1 rounded">Trust: 85+</span>
+            </div>
+
+            <!-- Masked Contact Indicator -->
+            <div class="p-2.5 bg-brand-dark/60 rounded-xl border border-brand-border/60 flex items-center justify-between text-xs text-gray-400">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-brand-accent"></i> Owner Phone:
+              </span>
+              <span class="font-mono text-gray-300 font-bold">+91 98••••••42 (Masked)</span>
+            </div>
+
+            <div class="pt-2 border-t border-brand-border/60 flex items-center justify-between">
+              <div class="text-[11px] text-gray-400">
+                Incharge: <strong class="text-gray-200">Dr. Ritesh Kushwaha</strong>
+              </div>
+              <button onclick="handleProtectedAction(() => requestItem('Rigol DS1054Z Oscilloscope', 'EF-3 Electronics Lab', 85))" class="bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold text-xs px-3.5 py-2 rounded-xl transition">
+                Reserve Item
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Horizontal Filter Rails -->
+  <section class="px-4 max-w-7xl mx-auto mb-6">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+      <button onclick="filterCategory('All')" class="cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-brand-accent text-brand-dark transition">All Gear</button>
+      <button onclick="filterCategory('Measurement')" class="cat-pill px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-brand-card hover:bg-brand-surface border border-brand-border text-gray-300 transition">Lab Instruments</button>
+      <button onclick="filterCategory('IoT')" class="cat-pill px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-brand-card hover:bg-brand-surface border border-brand-border text-gray-300 transition">IoT & Robotics</button>
+      <button onclick="filterCategory('Media')" class="cat-pill px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-brand-card hover:bg-brand-surface border border-brand-border text-gray-300 transition">Media & Club</button>
+      <button onclick="filterCategory('Fabrication')" class="cat-pill px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-brand-card hover:bg-brand-surface border border-brand-border text-gray-300 transition">3D & Prototyping</button>
+    </div>
+  </section>
+
+  <!-- Inventory Catalog Grid -->
+  <section id="catalog" class="px-4 max-w-7xl mx-auto mb-16">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-display font-bold text-white">Campus Gear Catalogue</h2>
+        <p class="text-xs text-brand-muted">Public view mode (Sensitive owner contact details stay hidden until approved)</p>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full sm:w-64">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-2.5 text-gray-400"></i>
+        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search equipment or lab..." class="w-full bg-brand-card border border-brand-border rounded-full pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent transition" />
+      </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 CU ShareHub - Built for Campus Peer Support</p>
-    </footer>
+    <!-- Product Grid -->
+    <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <!-- Injected dynamically -->
+    </div>
+  </section>
 
-    <script>
-        const initialResources = [
-            {
-                title: "Data Structures & Algorithms Notes",
-                category: "Notes",
-                description: "Handwritten unit 1 to 4 notes for CSE 2nd year.",
-                contact: "+91 9876543210"
-            },
-            {
-                title: "Engineering Drawing Drafter",
-                category: "Tools",
-                description: "Perfect condition drafter available for sharing/rent.",
-                contact: "WhatsApp: +91 9123456789"
-            },
-            {
-                title: "Let Us C - Yashavant Kanetkar",
-                category: "Books",
-                description: "C Programming textbook for 1st semester students.",
-                contact: "Contact: Student block 3"
-            }
-        ];
+  <!-- Security Protocol Overview -->
+  <section id="lifecycle" class="py-12 px-4 max-w-7xl mx-auto border-t border-brand-border/40">
+    <div class="text-center max-w-xl mx-auto mb-10">
+      <span class="text-xs font-mono font-bold uppercase text-brand-accent">Zero Misuse System</span>
+      <h3 class="text-2xl sm:text-3xl font-display font-bold text-white mt-1">Privacy & Security Engine</h3>
+      <p class="text-xs sm:text-sm text-gray-400 mt-1">How CU ShareHub prevents harassment, data scrapers, and lost gear.</p>
+    </div>
 
-        let resources = JSON.parse(localStorage.getItem("cu_sharehub_items")) || initialResources;
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-brand-surface border border-brand-border p-5 rounded-2xl space-y-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-card flex items-center justify-center text-brand-accent font-bold text-sm"><i data-lucide="shield-check" class="w-4 h-4"></i></div>
+        <h4 class="font-bold text-white text-sm">1. Official Email Gate</h4>
+        <p class="text-xs text-gray-400">Only active students with valid `@cumail.in` domains can authenticate. Anonymous visitors cannot see or contact users.</p>
+      </div>
 
-        function renderResources() {
-            const grid = document.getElementById("resourceGrid");
-            const searchVal = document.getElementById("searchInput").value.toLowerCase();
-            const filterVal = document.getElementById("filterCategory").value;
+      <div class="bg-brand-surface border border-brand-border p-5 rounded-2xl space-y-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-card flex items-center justify-center text-brand-accent font-bold text-sm"><i data-lucide="eye-off" class="w-4 h-4"></i></div>
+        <h4 class="font-bold text-white text-sm">2. Masked Contact Info</h4>
+        <p class="text-xs text-gray-400">Phone numbers and exact locations are hidden. Full contact info is only unmasked once a loan booking request is confirmed.</p>
+      </div>
 
-            grid.innerHTML = "";
+      <div class="bg-brand-surface border border-brand-border p-5 rounded-2xl space-y-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-card flex items-center justify-center text-brand-accent font-bold text-sm"><i data-lucide="qr-code" class="w-4 h-4"></i></div>
+        <h4 class="font-bold text-white text-sm">3. Digital QR Handover</h4>
+        <p class="text-xs text-gray-400">Handover requires scanning a time-stamped QR token. Unreturned items trigger immediate Trust Score penalties.</p>
+      </div>
+    </div>
+  </section>
 
-            const filtered = resources.filter(item => {
-                const matchesSearch = item.title.toLowerCase().includes(searchVal) || item.description.toLowerCase().includes(searchVal);
-                const matchesCategory = filterVal === "All" || item.category === filterVal;
-                return matchesSearch && matchesCategory;
-            });
+  <!-- Presentation Team Credits -->
+  <section id="team" class="py-12 px-4 max-w-7xl mx-auto border-t border-brand-border/40">
+    <div class="bg-brand-surface border border-brand-border rounded-3xl p-6 sm:p-8">
+      <div class="max-w-2xl">
+        <span class="text-[10px] font-mono uppercase bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold">1st Sem Project Presentation</span>
+        <h3 class="text-xl sm:text-2xl font-display font-bold text-white mt-2">Department of UIE &bull; Information Technology</h3>
+        <p class="text-xs text-gray-400 mt-1">Chandigarh University &bull; Under Guidance of <strong class="text-gray-200">Dr. Ritesh Kumar Kushwaha</strong></p>
+      </div>
 
-            if (filtered.length === 0) {
-                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #777;'>No resources found.</p>";
-                return;
-            }
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+        <div class="bg-brand-card p-3 rounded-xl border border-brand-border">
+          <div class="text-xs font-bold text-white">Amit Kumar</div>
+          <div class="text-[11px] font-mono text-brand-accent">26BET10149</div>
+        </div>
+        <div class="bg-brand-card p-3 rounded-xl border border-brand-border">
+          <div class="text-xs font-bold text-white">Parimeet Kaur</div>
+          <div class="text-[11px] font-mono text-gray-400">UIE IT</div>
+        </div>
+        <div class="bg-brand-card p-3 rounded-xl border border-brand-border">
+          <div class="text-xs font-bold text-white">Kushal</div>
+          <div class="text-[11px] font-mono text-gray-400">UIE IT</div>
+        </div>
+        <div class="bg-brand-card p-3 rounded-xl border border-brand-border">
+          <div class="text-xs font-bold text-white">Eeshaan Vashist</div>
+          <div class="text-[11px] font-mono text-gray-400">UIE IT</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            filtered.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                    <span class="badge">${item.category}</span>
-                    <h3>${item.title}</h3>
-                    <p>${item.description}</p>
-                    <div class="contact">📍 ${item.contact}</div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+  <!-- Mobile Bottom Navigation -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-surface/95 backdrop-blur-lg border-t border-brand-border px-3 py-2 flex items-center justify-around shadow-2xl">
+    <a href="#hero" class="flex flex-col items-center gap-1 text-[10px] text-brand-accent font-semibold">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span>Home</span>
+    </a>
+    <a href="#catalog" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 hover:text-white">
+      <i data-lucide="grid" class="w-5 h-5"></i>
+      <span>Catalog</span>
+    </a>
+    <button onclick="handleProtectedAction(() => openScannerModal())" class="w-11 h-11 -mt-5 rounded-full bg-brand-accent text-brand-dark flex items-center justify-center shadow-lg shadow-brand-accent/30 font-bold">
+      <i data-lucide="qr-code" class="w-6 h-6"></i>
+    </button>
+    <button onclick="handleProtectedAction(() => openLoansDrawer())" class="relative flex flex-col items-center gap-1 text-[10px] text-gray-400 hover:text-white">
+      <i data-lucide="backpack" class="w-5 h-5"></i>
+      <span id="mobileLoansBadge" class="absolute -top-1 right-2 w-3.5 h-3.5 rounded-full bg-brand-accent text-brand-dark text-[9px] font-bold flex items-center justify-center hidden">0</span>
+      <span>Loans</span>
+    </button>
+    <button onclick="handleProtectedAction(() => openModal('addModal'))" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 hover:text-white">
+      <i data-lucide="plus-circle" class="w-5 h-5"></i>
+      <span>Share</span>
+    </button>
+  </nav>
 
-        document.getElementById("resourceForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const newItem = {
-                title: document.getElementById("title").value,
-                category: document.getElementById("category").value,
-                contact: document.getElementById("contact").value,
-                description: document.getElementById("description").value
-            };
-            resources.unshift(newItem);
-            localStorage.setItem("cu_sharehub_items", JSON.stringify(resources));
-            renderResources();
-            this.reset();
-        });
+  <!-- ==================== MODALS & AUTH DRAWERS ==================== -->
 
-        document.getElementById("searchInput").addEventListener("input", renderResources);
-        document.getElementById("filterCategory").addEventListener("change", renderResources);
-
-        // Initial load
-        renderResources();
-    </script>
-</body>
-</html>
+  <!-- MODAL: Student Sign-In / Registration Modal -->
+  <div id="authModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 relative shadow-2xl">
+      <button onclick        
+            
+        
  
