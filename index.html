@@ -81,12 +81,7 @@ index.html
           <span id="activeLoansCountBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-accent text-brand-dark text-[10px] font-bold flex items-center justify-center">0</span>
         </button>
 
-        <div id="authHeaderWidget">
-          <button onclick="openModal('authModal')" class="bg-brand-accent text-brand-dark font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
-            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-            <span>Sign In</span>
-          </button>
-        </div>
+        <div id="authHeaderWidget"></div>
       </div>
     </nav>
   </header>
@@ -110,10 +105,10 @@ index.html
         </p>
 
         <div class="flex flex-wrap items-center gap-3 pt-2">
-          <button onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" class="bg-brand-accent text-brand-dark font-bold px-6 py-3 rounded-full text-xs sm:text-sm">
+          <button onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" class="bg-brand-accent text-brand-dark font-bold px-6 py-3 rounded-full text-xs sm:text-sm cursor-pointer">
             Browse Gear
           </button>
-          <button onclick="openModal('addModal')" class="bg-brand-card border border-brand-border text-white font-semibold px-5 py-3 rounded-full text-xs sm:text-sm">
+          <button onclick="openModal('addModal')" class="bg-brand-card border border-brand-border text-white font-semibold px-5 py-3 rounded-full text-xs sm:text-sm cursor-pointer">
             + Share My Gear
           </button>
         </div>
@@ -133,7 +128,7 @@ index.html
             <p class="text-xs text-gray-400">EF-3 Electronics Lab &bull; Dr. Ritesh Kushwaha</p>
           </div>
 
-          <button onclick="requestItem('Rigol DS1054Z Oscilloscope', 'EF-3 Electronics Lab', 85, '+91 98123 45678')" class="w-full bg-brand-accent text-brand-dark font-bold text-xs py-2.5 rounded-xl">
+          <button onclick="requestItem('Rigol DS1054Z Oscilloscope', 'EF-3 Electronics Lab', 85, '+91 98123 45678')" class="w-full bg-brand-accent text-brand-dark font-bold text-xs py-2.5 rounded-xl cursor-pointer">
             Reserve Item
           </button>
         </div>
@@ -153,13 +148,13 @@ index.html
   <!-- AUTH MODAL -->
   <div id="authModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 relative">
-      <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
       <h3 class="font-bold text-white text-lg mb-3">CU Institutional Auth</h3>
       <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
-        <input type="text" id="authName" required placeholder="Full Name" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="text" id="authName" required placeholder="Full Name (e.g. Amit Kumar)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
         <input type="email" id="authEmail" required placeholder="26bet10149@cumail.in" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
         <input type="text" id="authUID" required placeholder="UID (26BET10149)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
-        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Sign In</button>
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Sign In</button>
       </form>
     </div>
   </div>
@@ -167,12 +162,12 @@ index.html
   <!-- BOOKING MODAL -->
   <div id="bookingModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
-      <button onclick="closeModal('bookingModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <button onclick="closeModal('bookingModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
       <h3 class="font-bold text-white text-base mb-3">Reserve Equipment</h3>
       <form onsubmit="handleConfirmBooking(event)" class="space-y-3">
         <input type="text" id="bookTitle" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
         <input type="text" id="bookLocation" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-gray-300" />
-        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Confirm & Unmask Contact</button>
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Confirm & Unmask Contact</button>
       </form>
     </div>
   </div>
@@ -180,13 +175,13 @@ index.html
   <!-- LIST GEAR MODAL -->
   <div id="addModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
-      <button onclick="closeModal('addModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <button onclick="closeModal('addModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
       <h3 class="font-bold text-white text-base mb-3">List Campus Gear</h3>
       <form onsubmit="handleNewListing(event)" class="space-y-3">
         <input required id="newTitle" type="text" placeholder="Equipment Title" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
         <input required id="newLoc" type="text" placeholder="Location (e.g. UIE Lab 302)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
         <input required id="newPhone" type="tel" placeholder="Phone (+91 98765 43210)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
-        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Publish Listing</button>
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Publish Listing</button>
       </form>
     </div>
   </div>
@@ -197,21 +192,21 @@ index.html
       <div>
         <div class="flex items-center justify-between pb-4 border-b border-brand-border">
           <h3 class="font-bold text-white text-base">Active Loans</h3>
-          <button onclick="closeLoansDrawer()" class="text-gray-400">✕</button>
+          <button onclick="closeLoansDrawer()" class="text-gray-400 cursor-pointer">✕</button>
         </div>
         <div id="activeLoansList" class="mt-4 space-y-2"></div>
       </div>
-      <button onclick="closeLoansDrawer()" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs">Close</button>
+      <button onclick="closeLoansDrawer()" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs cursor-pointer">Close</button>
     </div>
   </div>
 
   <!-- TRUST SCORE MODAL -->
   <div id="trustModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 text-center relative">
-      <button onclick="closeModal('trustModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <button onclick="closeModal('trustModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
       <div class="text-4xl font-black text-brand-accent mb-2" id="modalTrustScoreNum">98</div>
       <div class="text-xs text-white font-bold mb-4">Tier 3: Full Campus Clearance</div>
-      <button onclick="closeModal('trustModal')" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs">Close</button>
+      <button onclick="closeModal('trustModal')" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs cursor-pointer">Close</button>
     </div>
   </div>
 
@@ -247,15 +242,44 @@ index.html
       closeModal('loansDrawer');
     }
 
+    function updateAuthHeaderUI() {
+      var container = document.getElementById('authHeaderWidget');
+      if (!container) return;
+
+      if (currentUser) {
+        container.innerHTML = 
+          '<div class="flex items-center gap-2 bg-brand-card border border-brand-border rounded-full py-1 px-3">' +
+            '<span class="text-xs text-white font-bold">' + currentUser.name + '</span>' +
+            '<button onclick="handleLogout()" class="text-red-400 text-xs hover:underline cursor-pointer">Logout</button>' +
+          '</div>';
+      } else {
+        container.innerHTML = 
+          '<button onclick="openModal(\'authModal\')" class="bg-brand-accent text-brand-dark font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer">' +
+            '<i data-lucide="lock" class="w-3.5 h-3.5"></i>' +
+            '<span>Sign In</span>' +
+          '</button>';
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
     function handleAuthSubmit(e) {
       e.preventDefault();
       var name = document.getElementById('authName').value;
       var email = document.getElementById('authEmail').value;
       var uid = document.getElementById('authUID').value;
+      
       currentUser = { name: name, email: email, uid: uid };
       localStorage.setItem('cu_auth_user', JSON.stringify(currentUser));
+      
+      updateAuthHeaderUI();
       closeModal('authModal');
-      alert("Signed in successfully!");
+      alert("Signed in successfully as " + name + "!");
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('cu_auth_user');
+      updateAuthHeaderUI();
     }
 
     function renderCatalog() {
@@ -271,7 +295,7 @@ index.html
             '<h4 class="font-bold text-white text-sm">' + item.title + '</h4>' +
             '<p class="text-xs text-gray-400 mt-1">' + item.location + '</p>' +
           '</div>' +
-          '<button onclick="requestItem(\'' + item.title.replace(/'/g, "\\'") + '\', \'' + item.location + '\', 85, \'' + item.phone + '\')" class="mt-3 bg-brand-accent text-brand-dark font-bold text-xs py-2 rounded-lg">' +
+          '<button onclick="requestItem(\'' + item.title.replace(/'/g, "\\'") + '\', \'' + item.location + '\', 85, \'' + item.phone + '\')" class="mt-3 bg-brand-accent text-brand-dark font-bold text-xs py-2 rounded-lg cursor-pointer">' +
             'Reserve' +
           '</button>';
         grid.appendChild(card);
@@ -321,10 +345,13 @@ index.html
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      updateAuthHeaderUI();
       renderCatalog();
       if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
 </html>
-      
+
+
+    
