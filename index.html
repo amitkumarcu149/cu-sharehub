@@ -2,20 +2,16 @@ index.html
 
 
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CU ShareHub | Authenticated P2P Campus Resource Hub</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -31,10 +27,6 @@ index.html
               accentHover: '#84cc16',
               muted: '#7a9e8d'
             }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
           }
         }
       }
@@ -45,55 +37,294 @@ index.html
     body {
       background-color: #070f0b;
       color: #e5e7eb;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .glow-lime {
-      box-shadow: 0 0 35px -8px rgba(163, 230, 53, 0.35);
+      font-family: sans-serif;
     }
     .badge-blur {
       background: rgba(15, 29, 22, 0.85);
       backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    /* Explicit modal backdrop fallback */
-    .modal-backdrop {
-      background-color: rgba(0, 0, 0, 0.85);
     }
   </style>
 </head>
-<body class="selection:bg-brand-accent selection:text-black pb-24 md:pb-12">
+<body class="pb-24">
 
   <!-- Security Announcement Bar -->
-  <div class="w-full bg-brand-surface/90 border-b border-brand-border py-2 px-4 text-xs flex justify-between items-center text-gray-300">
-    <div class="flex items-center gap-2 truncate">
-      <span class="inline-block w-2 h-2 rounded-full bg-brand-accent animate-ping flex-shrink-0"></span>
-      <span class="truncate"><strong class="text-white">Chandigarh University &bull; Secure Auth Active</strong> (@cumail.in Required)</span>
+  <div class="w-full bg-brand-surface border-b border-brand-border py-2 px-4 text-xs flex justify-between items-center text-gray-300">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+      <strong class="text-white">Chandigarh University &bull; Secure Auth Active</strong> (@cumail.in Required)
     </div>
-    <div class="hidden sm:flex items-center gap-3 text-[11px] text-gray-400">
-      <span class="flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3 text-brand-accent"></i> Contact Details Protected</span>
-      <span>&bull;</span>
-      <span>DPDP Act 2023 Compliant</span>
+    <div class="hidden sm:block text-[11px] text-gray-400">
+      Contact Details Protected &bull; DPDP Act 2023 Compliant
     </div>
   </div>
 
   <!-- Navigation Header -->
-  <header class="sticky top-2 sm:top-4 z-40 px-3 sm:px-6 max-w-7xl mx-auto">
-    <nav class="badge-blur border border-brand-border rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shadow-2xl">
-      <!-- Logo -->
-      <a href="javascript:void(0)" onclick="scrollToSection('hero')" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-accent flex items-center justify-center text-brand-dark font-black text-base font-display">
-          ⚡
-        </div>
+  <header class="sticky top-2 z-40 px-4 max-w-7xl mx-auto mt-2">
+    <nav class="badge-blur border border-brand-border rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-brand-dark font-black text-sm">⚡</div>
         <div>
-          <span class="font-display font-bold text-base sm:text-lg tracking-tight text-white block leading-none">CU<span class="text-brand-accent">SHARE</span></span>
-          <span class="text-[9px] uppercase tracking-widest text-brand-muted block font-medium">Campus Secure Portal</span>
+          <span class="font-bold text-base text-white block leading-none">CU<span class="text-brand-accent">SHARE</span></span>
+          <span class="text-[9px] uppercase text-brand-muted font-medium">Campus Secure Portal</span>
         </div>
-      </a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="openModal('trustModal')" class="flex items-center gap-1.5 bg-brand-card border border-brand-border px-3 py-1.5 rounded-full text-xs">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-accent"></i>
+          <span class="text-gray-300">Trust:</span>
+          <span id="navTrustScore" class="font-bold text-brand-accent">98</span>
+        </button>
+
+        <button onclick="openLoansDrawer()" class="relative p-2 rounded-full bg-brand-card border border-brand-border text-gray-300" title="My Active Loans">
+          <i data-lucide="backpack" class="w-4 h-4 text-white"></i>
+          <span id="activeLoansCountBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-accent text-brand-dark text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <div id="authHeaderWidget">
+          <button onclick="openModal('authModal')" class="bg-brand-accent text-brand-dark font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+            <span>Sign In</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Hero Section -->
+  <section class="pt-8 pb-10 px-4 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <div class="lg:col-span-7 space-y-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-xs font-bold uppercase">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Verified Students & Faculty Only
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+          Authenticated <br/>
+          <span class="text-brand-accent">Campus Peer Sharing.</span>
+        </h1>
+
+        <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+          Reserve lab equipment safely. Phone numbers and email details are fully masked until your booking request is authorized by the equipment owner.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <button onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" class="bg-brand-accent text-brand-dark font-bold px-6 py-3 rounded-full text-xs sm:text-sm">
+            Browse Gear
+          </button>
+          <button onclick="openModal('addModal')" class="bg-brand-card border border-brand-border text-white font-semibold px-5 py-3 rounded-full text-xs sm:text-sm">
+            + Share My Gear
+          </button>
+        </div>
+      </div>
+
+      <!-- Spotlight Card -->
+      <div class="lg:col-span-5">
+        <div class="bg-brand-card p-5 rounded-3xl border border-brand-border space-y-3">
+          <span class="text-[10px] uppercase bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold">Featured Lab Equipment</span>
+          
+          <div class="h-48 rounded-2xl overflow-hidden bg-brand-dark">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Rigol DSO" class="w-full h-full object-cover" />
+          </div>
+
+          <div>
+            <h3 class="font-bold text-white text-base">Rigol DS1054Z Oscilloscope</h3>
+            <p class="text-xs text-gray-400">EF-3 Electronics Lab &bull; Dr. Ritesh Kushwaha</p>
+          </div>
+
+          <button onclick="requestItem('Rigol DS1054Z Oscilloscope', 'EF-3 Electronics Lab', 85, '+91 98123 45678')" class="w-full bg-brand-accent text-brand-dark font-bold text-xs py-2.5 rounded-xl">
+            Reserve Item
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Inventory Catalog Grid -->
+  <section id="catalog" class="px-4 max-w-7xl mx-auto mb-16">
+    <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Campus Gear Catalogue</h2>
+    <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+  </section>
+
+  <!-- MODALS -->
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 relative">
+      <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <h3 class="font-bold text-white text-lg mb-3">CU Institutional Auth</h3>
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+        <input type="text" id="authName" required placeholder="Full Name" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="email" id="authEmail" required placeholder="26bet10149@cumail.in" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="text" id="authUID" required placeholder="UID (26BET10149)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div id="bookingModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
+      <button onclick="closeModal('bookingModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <h3 class="font-bold text-white text-base mb-3">Reserve Equipment</h3>
+      <form onsubmit="handleConfirmBooking(event)" class="space-y-3">
+        <input type="text" id="bookTitle" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="text" id="bookLocation" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-gray-300" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Confirm & Unmask Contact</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIST GEAR MODAL -->
+  <div id="addModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
+      <button onclick="closeModal('addModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <h3 class="font-bold text-white text-base mb-3">List Campus Gear</h3>
+      <form onsubmit="handleNewListing(event)" class="space-y-3">
+        <input required id="newTitle" type="text" placeholder="Equipment Title" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input required id="newLoc" type="text" placeholder="Location (e.g. UIE Lab 302)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input required id="newPhone" type="tel" placeholder="Phone (+91 98765 43210)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ACTIVE LOANS DRAWER -->
+  <div id="loansDrawer" class="fixed inset-0 bg-black/80 z-50 flex justify-end hidden">
+    <div class="bg-brand-surface border-l border-brand-border w-full max-w-md h-full p-6 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-brand-border">
+          <h3 class="font-bold text-white text-base">Active Loans</h3>
+          <button onclick="closeLoansDrawer()" class="text-gray-400">✕</button>
+        </div>
+        <div id="activeLoansList" class="mt-4 space-y-2"></div>
+      </div>
+      <button onclick="closeLoansDrawer()" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- TRUST SCORE MODAL -->
+  <div id="trustModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 text-center relative">
+      <button onclick="closeModal('trustModal')" class="absolute top-4 right-4 text-gray-400">✕</button>
+      <div class="text-4xl font-black text-brand-accent mb-2" id="modalTrustScoreNum">98</div>
+      <div class="text-xs text-white font-bold mb-4">Tier 3: Full Campus Clearance</div>
+      <button onclick="closeModal('trustModal')" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    var currentUser = JSON.parse(localStorage.getItem('cu_auth_user')) || null;
+    var userTrustScore = parseInt(localStorage.getItem('cu_trust_score')) || 98;
+    var catalog = JSON.parse(localStorage.getItem('cu_catalog')) || [
+      { id: 1, title: "Rigol DS1054Z 50MHz DSO", location: "UIE Lab 302", phone: "+91 98123 45678", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" },
+      { id: 2, title: "Arduino Uno R3 Ultimate Kit", location: "NC-3 Hostel Block", phone: "+91 98765 12345", img: "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=400&q=80" },
+      { id: 3, title: "Canon EOS 200D DSLR Kit", location: "Apex Media Society", phone: "+91 99887 76655", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80" },
+      { id: 4, title: "Creality Ender 3D Printer", location: "Innovation Cell EF-3", phone: "+91 97654 32109", img: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80" }
+    ];
+    var activeLoans = JSON.parse(localStorage.getItem('cu_loans')) || [];
+    var currentSelectedPhone = "";
+
+    function openModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function openLoansDrawer() {
+      updateLoansUI();
+      openModal('loansDrawer');
+    }
+
+    function closeLoansDrawer() {
+      closeModal('loansDrawer');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      var name = document.getElementById('authName').value;
+      var email = document.getElementById('authEmail').value;
+      var uid = document.getElementById('authUID').value;
+      currentUser = { name: name, email: email, uid: uid };
+      localStorage.setItem('cu_auth_user', JSON.stringify(currentUser));
+      closeModal('authModal');
+      alert("Signed in successfully!");
+    }
+
+    function renderCatalog() {
+      var grid = document.getElementById('catalogGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      catalog.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = "bg-brand-surface rounded-2xl border border-brand-border p-4 flex flex-col justify-between";
+        card.innerHTML = 
+          '<div>' +
+            '<img src="' + item.img + '" class="w-full h-36 object-cover rounded-xl mb-3" />' +
+            '<h4 class="font-bold text-white text-sm">' + item.title + '</h4>' +
+            '<p class="text-xs text-gray-400 mt-1">' + item.location + '</p>' +
+          '</div>' +
+          '<button onclick="requestItem(\'' + item.title.replace(/'/g, "\\'") + '\', \'' + item.location + '\', 85, \'' + item.phone + '\')" class="mt-3 bg-brand-accent text-brand-dark font-bold text-xs py-2 rounded-lg">' +
+            'Reserve' +
+          '</button>';
+        grid.appendChild(card);
+      });
+    }
+
+    function requestItem(title, location, trustReq, phone) {
+      document.getElementById('bookTitle').value = title;
+      document.getElementById('bookLocation').value = location;
+      currentSelectedPhone = phone;
+      openModal('bookingModal');
+    }
+
+    function handleConfirmBooking(e) {
+      e.preventDefault();
+      var title = document.getElementById('bookTitle').value;
+      activeLoans.unshift({ id: Date.now(), title: title, phone: currentSelectedPhone });
+      localStorage.setItem('cu_loans', JSON.stringify(activeLoans));
+      closeModal('bookingModal');
+      alert("Booking confirmed! Owner phone: " + currentSelectedPhone);
+    }
+
+    function handleNewListing(e) {
+      e.preventDefault();
+      var title = document.getElementById('newTitle').value;
+      var loc = document.getElementById('newLoc').value;
+      var phone = document.getElementById('newPhone').value;
+      catalog.unshift({ id: Date.now(), title: title, location: loc, phone: phone, img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" });
+      localStorage.setItem('cu_catalog', JSON.stringify(catalog));
+      renderCatalog();
+      closeModal('addModal');
+      alert("Gear listed successfully!");
+    }
+
+    function updateLoansUI() {
+      var list = document.getElementById('activeLoansList');
+      if (!list) return;
+      if (activeLoans.length === 0) {
+        list.innerHTML = '<div class="text-xs text-gray-400">No active loans</div>';
+      } else {
+        var html = '';
+        activeLoans.forEach(function(l) {
+          html += '<div class="p-3 bg-brand-card rounded-xl text-xs text-white"><div><strong>' + l.title + '</strong></div><div class="text-brand-accent">Phone: ' + l.phone + '</div></div>';
+        });
+        list.innerHTML = html;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCatalog();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
+      
