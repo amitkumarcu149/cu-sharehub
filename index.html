@@ -78,10 +78,10 @@
           Verified Campus Network (BE-IT Project)
         </span>
         <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
-          Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
+          Authenticated Campus Peer Sharing.
         </h2>
         <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
-          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_0](start_span)[span_0](end_span).
+          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_1](start_span)[span_1](end_span).
         </p>
       </div>
     </header>
@@ -166,7 +166,7 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default core devices referenced from PPT
+    // Default core devices (Rigol Oscilloscope, Arduino, DSLR, 3D Printer) referenced from PPT[span_2](start_span)[span_2](end_span)
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
@@ -205,6 +205,13 @@
         timestamp: 1710000004000
       }
     };
+
+    // Automatically push default listings to Firebase if database is empty (so they stay permanently along with user items)
+    db.ref('listings').once('value', (snapshot) => {
+      if (!snapshot.val()) {
+        db.ref('listings').set(defaultListings);
+      }
+    });
 
     // Check localStorage login session
     const savedUser = localStorage.getItem('cu_user');
@@ -301,16 +308,12 @@
       });
     }
 
-    // Real-time Database Sync Listener with Fallbacks
+    // Real-time Database Sync Listener
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
     db.ref('listings').on('value', (snapshot) => {
-      let data = snapshot.val();
-
-      if (!data) {
-        data = defaultListings;
-      }
+      const data = snapshot.val() || {};
 
       listingsContainer.innerHTML = '';
       const keys = Object.keys(data).reverse();
