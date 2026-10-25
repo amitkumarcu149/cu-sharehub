@@ -81,7 +81,7 @@
           Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
         </h2>
         <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
-          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_1](start_span)[span_1](end_span).
+          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_0](start_span)[span_0](end_span).
         </p>
       </div>
     </header>
@@ -166,7 +166,7 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default 4-5 core devices referenced from PPT
+    // Default core devices referenced from PPT
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
@@ -301,7 +301,7 @@
       });
     }
 
-    // Real-time Database Sync Listener with Default Fallback
+    // Real-time Database Sync Listener with Fallbacks
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
@@ -318,19 +318,24 @@
 
       keys.forEach(key => {
         const item = data[key];
-        const isReserved = item.status === "Reserved";
+        const itemStatus = item.status || "Available";
+        const isReserved = itemStatus === "Reserved";
+        const itemCategory = item.category || "General";
+        const itemName = item.name || "Unnamed Resource";
+        const itemUser = item.user || "Campus User";
+        const itemContact = item.contact || "N/A";
         
         listingsContainer.innerHTML += `
           <div class="bg-[#111816] p-5 rounded-3xl border ${isReserved ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-800 hover:border-emerald-500/40'} transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
             <div class="space-y-1.5">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.category}</span>
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">${item.status}</span>
-                <span class="text-[11px] text-slate-500">by ${item.user}</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${itemCategory}</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">${itemStatus}</span>
+                <span class="text-[11px] text-slate-500">by ${itemUser}</span>
               </div>
-              <h4 class="font-bold text-white text-sm md:text-base">${item.name}</h4>
-              <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${item.contact}</span></p>
-              ${isReserved ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
+              <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
+              <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${itemContact}</span></p>
+              ${isReserved && item.reservedBy ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
             </div>
             
             <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -339,7 +344,7 @@
                   Reserve
                 </button>
               ` : ''}
-              <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
+              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
                 Get Contact
               </button>
             </div>
