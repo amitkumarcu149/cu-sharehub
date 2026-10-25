@@ -81,7 +81,7 @@
           Authenticated Campus Peer Sharing.
         </h2>
         <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
-          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_1](start_span)[span_1](end_span).
+          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_4](start_span)[span_4](end_span).
         </p>
       </div>
     </header>
@@ -113,6 +113,11 @@
               <option value="3D & Prototyping">🖨️ 3D & Prototyping</option>
               <option value="Books & Notes">📚 Books & Notes</option>
             </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Image URL (Optional)</label>
+            <input type="url" id="itemImageUrl" placeholder="https://images.unsplash.com/..." class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
           </div>
 
           <div>
@@ -166,7 +171,7 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default core devices (Rigol Oscilloscope, Arduino, DSLR, 3D Printer) referenced from PPT[span_2](start_span)[span_2](end_span)
+    // Default core devices with images[span_5](start_span)[span_5](end_span)
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
@@ -175,6 +180,7 @@
         contact: "UIE Block 3 / Ext: 4021",
         status: "Available",
         reservedBy: "",
+        imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
         timestamp: 1710000001000
       },
       "default_2": {
@@ -184,6 +190,7 @@
         contact: "Hostel Block A / 9876543210",
         status: "Available",
         reservedBy: "",
+        imageUrl: "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=600&q=80",
         timestamp: 1710000002000
       },
       "default_3": {
@@ -193,6 +200,7 @@
         contact: "Student Activity Centre",
         status: "Available",
         reservedBy: "",
+        imageUrl: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
         timestamp: 1710000003000
       },
       "default_4": {
@@ -202,16 +210,10 @@
         contact: "Mech Workshop / Block B",
         status: "Available",
         reservedBy: "",
+        imageUrl: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
         timestamp: 1710000004000
       }
     };
-
-    // Automatically push default listings to Firebase if database is empty (so they stay permanently along with user items)
-    db.ref('listings').once('value', (snapshot) => {
-      if (!snapshot.val()) {
-        db.ref('listings').set(defaultListings);
-      }
-    });
 
     // Check localStorage login session
     const savedUser = localStorage.getItem('cu_user');
@@ -270,6 +272,7 @@
 
       const name = document.getElementById('itemName').value;
       const category = document.getElementById('itemCategory').value;
+      const imageUrl = document.getElementById('itemImageUrl').value.trim() || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
       const contact = document.getElementById('itemContact').value;
 
       db.ref('listings').push({
@@ -277,6 +280,7 @@
         email: currentUserEmail,
         name: name,
         category: category,
+        imageUrl: imageUrl,
         contact: contact,
         status: "Available",
         reservedBy: "",
@@ -298,56 +302,70 @@
         return;
       }
 
-      db.ref('listings/' + key).update({
-        status: "Reserved",
-        reservedBy: `${currentUserName} (${currentUserUid})`
-      }).then(() => {
-        alert('Success: Device successfully reserved for your project!');
-      }).catch((error) => {
-        alert('Error: ' + error.message);
-      });
+      if (key.startsWith('default_')) {
+        db.ref('listings/' + key).set({
+          ...defaultListings[key],
+          status: "Reserved",
+          reservedBy: `${currentUserName} (${currentUserUid})`
+        }).then(() => {
+          alert('Success: Device successfully reserved for your project!');
+        });
+      } else {
+        db.ref('listings/' + key).update({
+          status: "Reserved",
+          reservedBy: `${currentUserName} (${currentUserUid})`
+        }).then(() => {
+          alert('Success: Device successfully reserved for your project!');
+        });
+      }
     }
 
-    // Real-time Database Sync Listener
+    // Real-time Database Sync Listener with Permanent Default Merge
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
     db.ref('listings').on('value', (snapshot) => {
-      const data = snapshot.val() || {};
+      const dbData = snapshot.val() || {};
+      
+      const combinedData = { ...defaultListings, ...dbData };
 
       listingsContainer.innerHTML = '';
-      const keys = Object.keys(data).reverse();
+      const keys = Object.keys(combinedData).reverse();
       itemCount.innerText = `${keys.length} items`;
 
       keys.forEach(key => {
-        const item = data[key];
+        const item = combinedData[key];
         const itemStatus = item.status || "Available";
         const isReserved = itemStatus === "Reserved";
         const itemCategory = item.category || "General";
         const itemName = item.name || "Unnamed Resource";
         const itemUser = item.user || "Campus User";
         const itemContact = item.contact || "N/A";
+        const itemImg = item.imageUrl || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80";
         
         listingsContainer.innerHTML += `
-          <div class="bg-[#111816] p-5 rounded-3xl border ${isReserved ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-800 hover:border-emerald-500/40'} transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
-            <div class="space-y-1.5">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${itemCategory}</span>
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">${itemStatus}</span>
-                <span class="text-[11px] text-slate-500">by ${itemUser}</span>
+          <div class="bg-[#111816] p-5 rounded-3xl border ${isReserved ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-800 hover:border-emerald-500/40'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+              <img src="${itemImg}" alt="${itemName}" class="w-full sm:w-24 h-24 object-cover rounded-2xl border border-slate-800 flex-shrink-0">
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${itemCategory}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">${itemStatus}</span>
+                  <span class="text-[11px] text-slate-500">by ${itemUser}</span>
+                </div>
+                <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
+                <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${itemContact}</span></p>
+                ${isReserved && item.reservedBy ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
               </div>
-              <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
-              <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${itemContact}</span></p>
-              ${isReserved && item.reservedBy ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
             </div>
             
-            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto flex-shrink-0">
               ${!isReserved ? `
                 <button onclick="reserveItem('${key}')" class="text-xs font-bold bg-emerald-400 hover:bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl transition duration-200 text-center">
                   Reserve
                 </button>
               ` : ''}
-              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
+              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
                 Get Contact
               </button>
             </div>
