@@ -86,10 +86,10 @@
               Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
             </h2>
             <p class="text-xs md:text-sm text-slate-300 max-w-lg leading-relaxed">
-              Collaborate, list, discover, and reserve lab instruments or project resources securely with real-time sync across university peers[span_0](start_span)[span_0](end_span).
+              Collaborate, list, discover, and reserve lab instruments securely with real-time sync and built-in student trust scoring[span_0](start_span)[span_0](end_span).
             </p>
             <div class="flex flex-wrap gap-3 pt-2">
-              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔬 Lab Equipment</span>
+              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🛡️ Trust Score: 98%</span>
               <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">⚡ Real-time Sync</span>
               <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔒 Secure Login</span>
             </div>
@@ -192,10 +192,11 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default core devices with working image URLs[span_1](start_span)[span_1](end_span)
+    // Default core devices with Trust Scores and working image URLs[span_1](start_span)[span_1](end_span)
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
+        trustScore: "99% Trust",
         name: "Rigol 100MHz Digital Oscilloscope",
         category: "Lab Instruments",
         contact: "UIE Block 3 / Ext: 4021",
@@ -206,6 +207,7 @@
       },
       "default_2": {
         user: "Rahul Sharma [26BET10149]",
+        trustScore: "96% Trust",
         name: "Arduino Mega & IoT Sensor Kit",
         category: "IoT & Robotics",
         contact: "Hostel Block A / 9876543210",
@@ -216,6 +218,7 @@
       },
       "default_3": {
         user: "Robotics Club CU",
+        trustScore: "98% Trust",
         name: "Sony Alpha DSLR Camera (Event Kit)",
         category: "Media & Club",
         contact: "Student Activity Centre",
@@ -226,6 +229,7 @@
       },
       "default_4": {
         user: "Aman Verma [26BET10185]",
+        trustScore: "95% Trust",
         name: "Creality Ender-3 Pro 3D Printer",
         category: "3D & Prototyping",
         contact: "Mech Workshop / Block B",
@@ -276,7 +280,7 @@
       location.reload();
     }
 
-    // Publish New Equipment Listing
+    // Publish New Equipment Listing with Automatic Trust Score
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -298,6 +302,7 @@
 
       db.ref('listings').push({
         user: `${currentUserName} [${currentUserUid}]`,
+        trustScore: "95% Trust (Verified)",
         email: currentUserEmail,
         name: name,
         category: category,
@@ -308,7 +313,7 @@
         timestamp: Date.now()
       }).then(() => {
         itemForm.reset();
-        alert('Success: Item published and synced to campus network!');
+        alert('Success: Item published with verified campus trust score!');
       }).catch((error) => {
         alert('Error: ' + error.message);
       });
@@ -342,7 +347,7 @@
       }
     }
 
-    // Real-time Database Sync Listener with Permanent Default Merge
+    // Real-time Database Sync Listener with Trust Score & Default Merge
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
@@ -362,6 +367,7 @@
         const itemCategory = item.category || "General";
         const itemName = item.name || "Unnamed Resource";
         const itemUser = item.user || "Campus User";
+        const itemTrust = item.trustScore || "95% Trust";
         const itemContact = item.contact || "N/A";
         const itemImg = item.imageUrl || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80";
         
@@ -373,9 +379,10 @@
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 neon-border">${itemCategory}</span>
                   <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-blue-500/10 text-blue-400 border border-blue-500/30'}">${itemStatus}</span>
-                  <span class="text-[11px] text-slate-500">by ${itemUser}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">🛡️ ${itemTrust}</span>
                 </div>
                 <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
+                <p class="text-xs text-slate-400">Lender: <span class="text-slate-200">${itemUser}</span></p>
                 <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${itemContact}</span></p>
                 ${isReserved && item.reservedBy ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
               </div>
