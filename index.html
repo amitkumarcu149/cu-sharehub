@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CU ShareHub - Campus Resource Sharing Platform</title>
   
-  <!-- Tailwind CSS CDN for Modern Styling -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Firebase Compat SDKs -->
+  <!-- Firebase Compat SDKs (App, Database, Auth) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -20,79 +21,106 @@
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen text-slate-800">
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-sm border-b border-slate-100 py-4 px-6 mb-8">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl">🎓</span>
-        <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">CU ShareHub</h1>
+  <!-- 1. LOGIN SCREEN (Initially Visible if not logged in) -->
+  <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4">
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-xl border border-slate-100 text-center space-y-6">
+      <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-inner">
+        🎓
       </div>
-      <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-3 py-1.5 rounded-full border border-indigo-100">Live Sync Enabled ⚡</span>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">CU ShareHub</h1>
+        <p class="text-sm text-slate-500 mt-1">Sign in with your campus/Google account to access the resource sharing platform.</p>
+      </div>
+      <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 shadow-sm transition duration-200 text-sm">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        Sign in with Google
+      </button>
     </div>
-  </nav>
+  </div>
 
-  <!-- Main Container -->
-  <main class="max-w-4xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-    
-    <!-- Left Column: Add Item Form -->
-    <section class="md:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
-      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-        <span>➕</span> List a Resource
-      </h2>
+  <!-- 2. MAIN APP DASHBOARD (Initially Hidden until login) -->
+  <div id="appDashboard" class="hidden min-h-screen pb-12">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-slate-100 py-4 px-6 mb-8">
+      <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">🎓</span>
+          <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">CU ShareHub</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
+            <img id="userAvatar" src="" alt="User" class="w-6 h-6 rounded-full">
+            <span id="userNameDisplay" class="text-xs font-semibold text-slate-700"></span>
+          </div>
+          <button onclick="logout()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-3 py-1.5 rounded-full border border-rose-100 transition">
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
       
-      <form id="itemForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Your Name</label>
-          <input type="text" id="userName" required placeholder="e.g. Rahul Sharma" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-        </div>
-        
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Item / Resource Name</label>
-          <input type="text" id="itemName" required placeholder="e.g. Scientific Calculator / Guitar" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Category</label>
-          <select id="itemCategory" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition bg-white">
-            <option value="Books & Notes">📚 Books & Notes</option>
-            <option value="Electronics">💻 Electronics</option>
-            <option value="Instruments">🎸 Instruments</option>
-            <option value="Others">📦 Others</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Contact Info (Phone / Hostel)</label>
-          <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-        </div>
-
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-200 text-sm">
-          Publish Listing
-        </button>
-      </form>
-    </section>
-
-    <!-- Right Column: Live Listings Feed -->
-    <section class="md:col-span-2">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <span>🔥</span> Campus Feed
+      <!-- Left Column: Add Item Form -->
+      <section class="md:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <span>➕</span> List a Resource
         </h2>
-        <span id="itemCount" class="text-xs text-slate-400 font-medium">0 items available</span>
-      </div>
+        
+        <form id="itemForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Item / Resource Name</label>
+            <input type="text" id="itemName" required placeholder="e.g. Scientific Calculator / Guitar" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+          </div>
 
-      <div id="listingsContainer" class="space-y-4">
-        <!-- Dynamic Cards will load here -->
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 text-center shadow-sm">
-          <p class="text-slate-400 text-sm">Connecting to cloud database...</p>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Category</label>
+            <select id="itemCategory" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition bg-white">
+              <option value="Books & Notes">📚 Books & Notes</option>
+              <option value="Electronics">💻 Electronics</option>
+              <option value="Instruments">🎸 Instruments</option>
+              <option value="Others">📦 Others</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Contact Info (Phone / Hostel)</label>
+            <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+          </div>
+
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-200 text-sm">
+            Publish Listing
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Column: Live Listings Feed -->
+      <section class="md:col-span-2">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span>🔥</span> Campus Feed
+          </h2>
+          <span id="itemCount" class="text-xs text-slate-400 font-medium">0 items available</span>
         </div>
-      </div>
-    </section>
 
-  </main>
+        <div id="listingsContainer" class="space-y-4">
+          <div class="bg-white p-8 rounded-2xl border border-slate-100 text-center shadow-sm">
+            <p class="text-slate-400 text-sm">Loading items...</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
 
   <script>
-    // Firebase Configuration (Aapka wahi exact config jo database banate waqt mila tha)
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAqgRTNJVl-uBblhCN-aHwWZgxoiM4HIKY",
       authDomain: "cu-sharehub-b081d.firebaseapp.com",
@@ -105,20 +133,57 @@
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.database();
+
+    const loginScreen = document.getElementById('loginScreen');
+    const appDashboard = document.getElementById('appDashboard');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userAvatar = document.getElementById('userAvatar');
+
+    // Google Sign-In Function
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch((error) => {
+        alert('Login Error: ' + error.message);
+      });
+    }
+
+    // Logout Function
+    function logout() {
+      auth.signOut();
+    }
+
+    // Monitor Auth State
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Logged In
+        loginScreen.classList.add('hidden');
+        appDashboard.classList.remove('hidden');
+        userNameDisplay.innerText = user.displayName;
+        userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
+      } else {
+        // Logged Out
+        loginScreen.classList.remove('hidden');
+        appDashboard.classList.add('hidden');
+      }
+    });
 
     // Form submission logic
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const user = document.getElementById('userName').value;
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+
       const name = document.getElementById('itemName').value;
       const category = document.getElementById('itemCategory').value;
       const contact = document.getElementById('itemContact').value;
 
       db.ref('listings').push({
-        user: user,
+        user: currentUser.displayName,
+        email: currentUser.email,
         name: name,
         category: category,
         contact: contact,
@@ -139,7 +204,7 @@
       listingsContainer.innerHTML = '';
 
       if (data) {
-        const keys = Object.keys(data).reverse(); // Latest items first
+        const keys = Object.keys(data).reverse();
         itemCount.innerText = `${keys.length} items available`;
 
         keys.forEach(key => {
