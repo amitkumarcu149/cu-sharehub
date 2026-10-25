@@ -3,55 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CU ShareHub - P2P Campus Resource Sharing</title>
+  <title>CU ShareHub - Campus Resource Sharing Platform</title>
   
-  <!-- Tailwind CSS CDN for styling -->
+  <!-- Tailwind CSS CDN for Modern Styling -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- 1. Firebase Compat SDKs (Browser friendly) -->
+  <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 sm:p-6">
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen text-slate-800">
 
-  <div class="max-w-xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-    <h1 class="text-2xl font-bold text-indigo-600 mb-4 text-center">CU ShareHub 🎸📚</h1>
-    
-    <!-- Item Listing Form -->
-    <form id="itemForm" class="space-y-4 mb-8">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Item Name (e.g., Guitar, Calc)</label>
-        <input type="text" id="itemName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-indigo-500 focus:border-indigo-500">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-sm border-b border-slate-100 py-4 px-6 mb-8">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl">🎓</span>
+        <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">CU ShareHub</h1>
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Category</label>
-        <select id="itemCategory" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-          <option value="Instrument">Instrument</option>
-          <option value="Book">Book</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Contact Info (Phone/Email)</label>
-        <input type="text" id="itemContact" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-      </div>
-      <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition">
-        List Item
-      </button>
-    </form>
-
-    <hr class="mb-6">
-
-    <!-- Live Listings Section -->
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Available Listings (Live Sync)</h2>
-    <div id="listingsContainer" class="space-y-3">
-      <p class="text-gray-500 text-center">Loading items from cloud...</p>
+      <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-3 py-1.5 rounded-full border border-indigo-100">Live Sync Enabled ⚡</span>
     </div>
-  </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <!-- Left Column: Add Item Form -->
+    <section class="md:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span>➕</span> List a Resource
+      </h2>
+      
+      <form id="itemForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Your Name</label>
+          <input type="text" id="userName" required placeholder="e.g. Rahul Sharma" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
+        
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Item / Resource Name</label>
+          <input type="text" id="itemName" required placeholder="e.g. Scientific Calculator / Guitar" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Category</label>
+          <select id="itemCategory" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition bg-white">
+            <option value="Books & Notes">📚 Books & Notes</option>
+            <option value="Electronics">💻 Electronics</option>
+            <option value="Instruments">🎸 Instruments</option>
+            <option value="Others">📦 Others</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Contact Info (Phone / Hostel)</label>
+          <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-200 text-sm">
+          Publish Listing
+        </button>
+      </form>
+    </section>
+
+    <!-- Right Column: Live Listings Feed -->
+    <section class="md:col-span-2">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <span>🔥</span> Campus Feed
+        </h2>
+        <span id="itemCount" class="text-xs text-slate-400 font-medium">0 items available</span>
+      </div>
+
+      <div id="listingsContainer" class="space-y-4">
+        <!-- Dynamic Cards will load here -->
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 text-center shadow-sm">
+          <p class="text-slate-400 text-sm">Connecting to cloud database...</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <script>
-    // 2. Aapka Firebase Configuration
+    // Firebase Configuration (Aapka wahi exact config jo database banate waqt mila tha)
     const firebaseConfig = {
       apiKey: "AIzaSyAqgRTNJVl-uBblhCN-aHwWZgxoiM4HIKY",
       authDomain: "cu-sharehub-b081d.firebaseapp.com",
@@ -66,50 +107,66 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 3. Form Submit hone par Firebase mein data save karna
+    // Form submission logic
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
+      const user = document.getElementById('userName').value;
       const name = document.getElementById('itemName').value;
       const category = document.getElementById('itemCategory').value;
       const contact = document.getElementById('itemContact').value;
 
-      // Database ke 'listings' node mein push karein
       db.ref('listings').push({
+        user: user,
         name: name,
         category: category,
         contact: contact,
         timestamp: Date.now()
       }).then(() => {
-        alert('Item successfully listed across all devices!');
         itemForm.reset();
       }).catch((error) => {
         alert('Error: ' + error.message);
       });
     });
 
-    // 4. Real-time data fetch karna (Dusre devices par turant dikhega)
+    // Real-time listener for listings
     const listingsContainer = document.getElementById('listingsContainer');
+    const itemCount = document.getElementById('itemCount');
+
     db.ref('listings').on('value', (snapshot) => {
       const data = snapshot.val();
       listingsContainer.innerHTML = '';
 
       if (data) {
-        Object.keys(data).forEach(key => {
+        const keys = Object.keys(data).reverse(); // Latest items first
+        itemCount.innerText = `${keys.length} items available`;
+
+        keys.forEach(key => {
           const item = data[key];
           listingsContainer.innerHTML += `
-            <div class="p-4 border rounded-lg shadow-sm bg-gray-50 flex justify-between items-center">
-              <div>
-                <h3 class="font-bold text-lg text-indigo-700">${item.name}</h3>
-                <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold">${item.category}</span>
-                <p class="text-sm text-gray-600 mt-1">Contact: <strong>${item.contact}</strong></p>
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100">${item.category}</span>
+                  <span class="text-xs text-slate-400">by ${item.user}</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-base">${item.name}</h3>
+                <p class="text-xs text-slate-500 font-medium">Contact: <span class="text-slate-700">${item.contact}</span></p>
               </div>
+              <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact copied!');" class="w-full sm:w-auto text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-4 py-2 rounded-xl transition">
+                Get Contact
+              </button>
             </div>
           `;
         });
       } else {
-        listingsContainer.innerHTML = '<p class="text-gray-500 text-center">No items listed yet. Be the first one!</p>';
+        itemCount.innerText = `0 items available`;
+        listingsContainer.innerHTML = `
+          <div class="bg-white p-8 rounded-2xl border border-slate-100 text-center shadow-sm">
+            <p class="text-slate-400 text-sm">No items listed yet. Be the first to add one!</p>
+          </div>
+        `;
       }
     });
   </script>
