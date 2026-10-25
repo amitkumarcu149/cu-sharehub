@@ -8,7 +8,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -16,19 +16,20 @@
   
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f0e; color: #f1f5f9; }
-    .neon-glow { box-shadow: 0 0 25px rgba(34, 197, 94, 0.15); }
+    .neon-glow { box-shadow: 0 0 30px rgba(34, 197, 94, 0.18); }
+    .neon-border { border: 1px solid rgba(34, 197, 94, 0.3); }
   </style>
 </head>
 <body class="min-h-screen selection:bg-emerald-500 selection:text-black">
 
   <!-- 1. UNIVERSITY LOGIN GATE -->
   <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4 bg-[#070a09]">
-    <div class="max-w-md w-full bg-[#111816] p-8 rounded-3xl shadow-2xl border border-emerald-500/20 text-center space-y-6 neon-glow">
-      <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-emerald-500/30">
+    <div class="max-w-md w-full bg-[#111816] p-8 rounded-3xl shadow-2xl neon-border text-center space-y-6 neon-glow">
+      <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto neon-border">
         🎓
       </div>
       <div>
-        <h1 class="text-2xl font-bold text-white tracking-wide">CU ShareHub</h1>
+        <h1 class="text-2xl font-extrabold text-white tracking-wide">CU ShareHub</h1>
         <p class="text-xs text-slate-400 mt-2">Enter your university credentials to access the peer sharing network.</p>
       </div>
 
@@ -56,12 +57,12 @@
   <!-- 2. MAIN DASHBOARD -->
   <div id="appDashboard" class="hidden min-h-screen pb-12">
     <!-- Navbar -->
-    <nav class="bg-[#111816]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <nav class="bg-[#111816]/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
       <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 bg-emerald-500 text-slate-950 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg shadow-emerald-500/20">CU</div>
           <div>
-            <h1 class="text-sm font-bold tracking-wider text-white">CU SHAREHUB</h1>
+            <h1 class="text-sm font-extrabold tracking-wider text-white">CU SHAREHUB</h1>
             <p id="navUserInfo" class="text-[10px] text-emerald-400 font-semibold"></p>
           </div>
         </div>
@@ -71,31 +72,51 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="max-w-6xl mx-auto px-6 pt-10 pb-6">
-      <div class="bg-gradient-to-r from-[#111816] to-[#15221d] border border-emerald-500/20 rounded-3xl p-8 relative overflow-hidden shadow-2xl neon-glow">
-        <span class="inline-block text-[11px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30 mb-4">
-          Verified Campus Network (BE-IT Project)
-        </span>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
-          Authenticated Campus Peer Sharing.
-        </h2>
-        <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
-          List, discover, and reserve lab instruments or project resources securely with real-time sync across the campus[span_4](start_span)[span_4](end_span).
-        </p>
+    <!-- Creative Hero Section with Student Study & Lab Theme -->
+    <header class="max-w-6xl mx-auto px-6 pt-8 pb-6">
+      <div class="bg-gradient-to-r from-[#111816] via-[#152620] to-[#0f1c18] neon-border rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-2xl neon-glow">
+        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div class="md:col-span-7 space-y-4">
+            <span class="inline-block text-[11px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 px-3.5 py-1.5 rounded-full neon-border">
+              ✨ Verified Campus Network (BE-IT Project)
+            </span>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+              Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
+            </h2>
+            <p class="text-xs md:text-sm text-slate-300 max-w-lg leading-relaxed">
+              Collaborate, list, discover, and reserve lab instruments or project resources securely with real-time sync across university peers[span_1](start_span)[span_1](end_span).
+            </p>
+            <div class="flex flex-wrap gap-3 pt-2">
+              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔬 Lab Equipment</span>
+              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">⚡ Real-time Sync</span>
+              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔒 Secure Login</span>
+            </div>
+          </div>
+          
+          <div class="md:col-span-5 relative">
+            <div class="relative rounded-2xl overflow-hidden neon-border shadow-2xl group">
+              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=700&q=80" alt="Students studying and collaborating" class="w-full h-48 md:h-56 object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">
+                <p class="text-xs font-bold text-emerald-300">📚 Empowering Student Innovation</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-6xl mx-auto px-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <main class="max-w-6xl mx-auto px-6 mt-4 grid grid-cols-1 md:grid-cols-3 gap-8">
       
       <!-- Left Column: Add Resource Form -->
-      <section class="md:col-span-1 bg-[#111816] p-6 rounded-3xl border border-slate-800 h-fit shadow-xl">
+      <section class="md:col-span-1 bg-[#111816] p-6 rounded-3xl neon-border h-fit shadow-xl">
         <div class="flex items-center justify-between mb-5">
           <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
             <span>➕</span> List Equipment
           </h3>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-1 rounded-md border border-emerald-500/20">Live Sync ⚡</span>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-1 rounded-md neon-border">Live Sync ⚡</span>
         </div>
         
         <form id="itemForm" class="space-y-4">
@@ -133,15 +154,15 @@
 
       <!-- Right Column: Live Feed -->
       <section class="md:col-span-2 space-y-4">
-        <div class="flex justify-between items-center bg-[#111816] px-6 py-4 rounded-2xl border border-slate-800">
+        <div class="flex justify-between items-center bg-[#111816] px-6 py-4 rounded-2xl neon-border">
           <h3 class="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
             <span class="text-amber-400">🔥</span> Campus Gear Catalogue Feed
           </h3>
-          <span id="itemCount" class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">0 items</span>
+          <span id="itemCount" class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full neon-border">0 items</span>
         </div>
 
         <div id="listingsContainer" class="space-y-3">
-          <div class="bg-[#111816] p-8 rounded-3xl border border-slate-800 text-center">
+          <div class="bg-[#111816] p-8 rounded-3xl neon-border text-center">
             <p class="text-slate-500 text-xs">Syncing campus catalogue...</p>
           </div>
         </div>
@@ -171,7 +192,7 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default core devices with images[span_5](start_span)[span_5](end_span)
+    // Default core devices with images[span_2](start_span)[span_2](end_span)
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
@@ -344,13 +365,13 @@
         const itemImg = item.imageUrl || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80";
         
         listingsContainer.innerHTML += `
-          <div class="bg-[#111816] p-5 rounded-3xl border ${isReserved ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-800 hover:border-emerald-500/40'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
+          <div class="bg-[#111816] p-5 rounded-3xl neon-border ${isReserved ? 'bg-amber-500/5' : 'hover:border-emerald-500/60'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
-              <img src="${itemImg}" alt="${itemName}" class="w-full sm:w-24 h-24 object-cover rounded-2xl border border-slate-800 flex-shrink-0">
+              <img src="${itemImg}" alt="${itemName}" class="w-full sm:w-24 h-24 object-cover rounded-2xl neon-border flex-shrink-0">
               <div class="space-y-1.5">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${itemCategory}</span>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">${itemStatus}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 neon-border">${itemCategory}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-blue-500/10 text-blue-400 border border-blue-500/30'}">${itemStatus}</span>
                   <span class="text-[11px] text-slate-500">by ${itemUser}</span>
                 </div>
                 <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
@@ -361,11 +382,11 @@
             
             <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto flex-shrink-0">
               ${!isReserved ? `
-                <button onclick="reserveItem('${key}')" class="text-xs font-bold bg-emerald-400 hover:bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl transition duration-200 text-center">
+                <button onclick="reserveItem('${key}')" class="text-xs font-bold bg-emerald-400 hover:bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl transition duration-200 text-center shadow-md">
                   Reserve
                 </button>
               ` : ''}
-              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
+              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 neon-border px-4 py-2.5 rounded-xl transition duration-200 text-center">
                 Get Contact
               </button>
             </div>
