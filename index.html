@@ -3,396 +3,379 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CU ShareHub - Campus Secure Peer Sharing</title>
+  <title>CU ShareHub | Authenticated P2P Campus Resource Hub</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Firebase Compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#070f0b',
+              surface: '#0f1d16',
+              card: '#14271f',
+              border: '#1f3d30',
+              accent: '#a3e635',
+              accentHover: '#84cc16',
+              muted: '#7a9e8d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f0e; color: #f1f5f9; }
-    .neon-glow { box-shadow: 0 0 30px rgba(34, 197, 94, 0.18); }
-    .neon-border { border: 1px solid rgba(34, 197, 94, 0.3); }
+    body {
+      background-color: #070f0b;
+      color: #e5e7eb;
+      font-family: sans-serif;
+    }
+    .badge-blur {
+      background: rgba(15, 29, 22, 0.85);
+      backdrop-filter: blur(14px);
+    }
   </style>
 </head>
-<body class="min-h-screen selection:bg-emerald-500 selection:text-black">
+<body class="pb-24">
 
-  <!-- 1. UNIVERSITY LOGIN GATE -->
-  <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4 bg-[#070a09]">
-    <div class="max-w-md w-full bg-[#111816] p-8 rounded-3xl shadow-2xl neon-border text-center space-y-6 neon-glow">
-      <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto neon-border">
-        🎓
-      </div>
-      <div>
-        <h1 class="text-2xl font-extrabold text-white tracking-wide">CU ShareHub</h1>
-        <p class="text-xs text-slate-400 mt-2">Enter your university credentials to access the peer sharing network.</p>
-      </div>
-
-      <form id="loginForm" class="space-y-4 text-left">
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Full Name</label>
-          <input type="text" id="loginName" required placeholder="e.g. Amit Kumar" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">University UID</label>
-          <input type="text" id="loginUid" required placeholder="e.g. 26BET10149" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">University Email ID</label>
-          <input type="email" id="loginEmail" required placeholder="e.g. user@cuchd.in" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
-        </div>
-        <button type="submit" class="w-full bg-emerald-400 hover:bg-emerald-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-xs tracking-wider uppercase">
-          Verify & Enter Portal
-        </button>
-      </form>
-      <p class="text-[11px] text-emerald-500/70 font-medium">🔒 Restricted to Chandigarh University Students Only</p>
+  <!-- Security Announcement Bar -->
+  <div class="w-full bg-brand-surface border-b border-brand-border py-2 px-4 text-xs flex justify-between items-center text-gray-300">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+      <strong class="text-white">Chandigarh University &bull; Secure Auth Active</strong> (@cumail.in Required)
+    </div>
+    <div class="hidden sm:block text-[11px] text-gray-400">
+      Contact Details Protected &bull; DPDP Act 2023 Compliant
     </div>
   </div>
 
-  <!-- 2. MAIN DASHBOARD -->
-  <div id="appDashboard" class="hidden min-h-screen pb-12">
-    <!-- Navbar -->
-    <nav class="bg-[#111816]/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-emerald-500 text-slate-950 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg shadow-emerald-500/20">CU</div>
-          <div>
-            <h1 class="text-sm font-extrabold tracking-wider text-white">CU SHAREHUB</h1>
-            <p id="navUserInfo" class="text-[10px] text-emerald-400 font-semibold"></p>
-          </div>
+  <!-- Navigation Header -->
+  <header class="sticky top-2 z-40 px-4 max-w-7xl mx-auto mt-2">
+    <nav class="badge-blur border border-brand-border rounded-full px-5 py-3 flex items-center justify-between shadow-2xl">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-brand-dark font-black text-sm">⚡</div>
+        <div>
+          <span class="font-bold text-base text-white block leading-none">CU<span class="text-brand-accent">SHARE</span></span>
+          <span class="text-[9px] uppercase text-brand-muted font-medium">Campus Secure Portal</span>
         </div>
-        <button onclick="logout()" class="text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-semibold px-3.5 py-2 rounded-xl border border-rose-500/20 transition">
-          Logout
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Trust Score Button -->
+        <button onclick="openTrustModal()" class="flex items-center gap-1.5 bg-brand-card border border-brand-border px-3 py-1.5 rounded-full text-xs cursor-pointer">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-accent"></i>
+          <span class="text-gray-300">Trust:</span>
+          <span id="navTrustScore" class="font-bold text-brand-accent">98</span>
         </button>
+
+        <!-- Active Loans Button -->
+        <button onclick="openLoansDrawer()" class="relative p-2 rounded-full bg-brand-card border border-brand-border text-gray-300 cursor-pointer" title="My Active Loans">
+          <i data-lucide="backpack" class="w-4 h-4 text-white"></i>
+          <span id="activeLoansCountBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-accent text-brand-dark text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Auth Header Widget -->
+        <div id="authHeaderWidget"></div>
       </div>
     </nav>
+  </header>
 
-    <!-- Creative Hero Section -->
-    <header class="max-w-6xl mx-auto px-6 pt-8 pb-6">
-      <div class="bg-gradient-to-r from-[#111816] via-[#152620] to-[#0f1c18] neon-border rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-2xl neon-glow">
-        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          <div class="md:col-span-7 space-y-4">
-            <span class="inline-block text-[11px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 px-3.5 py-1.5 rounded-full neon-border">
-              ✨ Verified Campus Network (BE-IT Project)
-            </span>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
-            </h2>
-            <p class="text-xs md:text-sm text-slate-300 max-w-lg leading-relaxed">
-              Collaborate, list, discover, and reserve lab instruments or project resources securely with real-time sync across university peers[span_0](start_span)[span_0](end_span).
-            </p>
-            <div class="flex flex-wrap gap-3 pt-2">
-              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔬 Lab Equipment</span>
-              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">⚡ Real-time Sync</span>
-              <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔒 Secure Login</span>
-            </div>
-          </div>
-          
-          <div class="md:col-span-5 relative">
-            <div class="relative rounded-2xl overflow-hidden neon-border shadow-2xl group">
-              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=700&q=80" alt="Students studying and collaborating" class="w-full h-48 md:h-56 object-cover group-hover:scale-105 transition duration-500">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">
-                <p class="text-xs font-bold text-emerald-300">📚 Empowering Student Innovation</p>
-              </div>
-            </div>
-          </div>
+  <!-- Main Hero Section -->
+  <section class="pt-8 pb-10 px-4 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <div class="lg:col-span-7 space-y-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-xs font-bold uppercase">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Verified Students & Faculty Only
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+          Authenticated <br/>
+          <span class="text-brand-accent">Campus Peer Sharing.</span>
+        </h1>
+
+        <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+          Reserve lab equipment safely. Phone numbers and email details are fully masked until your booking request is authorized by the equipment owner.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <button onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" class="bg-brand-accent text-brand-dark font-bold px-6 py-3 rounded-full text-xs sm:text-sm cursor-pointer">
+            Browse Gear
+          </button>
+          <button onclick="openModal('addModal')" class="bg-brand-card border border-brand-border text-white font-semibold px-5 py-3 rounded-full text-xs sm:text-sm cursor-pointer">
+            + Share My Gear
+          </button>
         </div>
       </div>
-    </header>
 
-    <!-- Main Container -->
-    <main class="max-w-6xl mx-auto px-6 mt-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-      
-      <!-- Left Column: Add Resource Form -->
-      <section class="md:col-span-1 bg-[#111816] p-6 rounded-3xl neon-border h-fit shadow-xl">
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
-            <span>➕</span> List Equipment
-          </h3>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-1 rounded-md neon-border">Live Sync ⚡</span>
-        </div>
-        
-        <form id="itemForm" class="space-y-4">
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Resource Name</label>
-            <input type="text" id="itemName" required placeholder="e.g. Function Generator" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+      <!-- Spotlight Card -->
+      <div class="lg:col-span-5">
+        <div class="bg-brand-card p-5 rounded-3xl border border-brand-border space-y-3">
+          <span class="text-[10px] uppercase bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded font-bold">Featured Lab Equipment</span>
+          
+          <div class="h-48 rounded-2xl overflow-hidden bg-brand-dark">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Rigol DSO" class="w-full h-full object-cover" />
           </div>
 
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
-            <select id="itemCategory" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
-              <option value="Lab Instruments">🔬 Lab Instruments</option>
-              <option value="IoT & Robotics">⚡ IoT & Robotics</option>
-              <option value="Media & Club">📷 Media & Club</option>
-              <option value="3D & Prototyping">🖨️ 3D & Prototyping</option>
-              <option value="Books & Notes">📚 Books & Notes</option>
-            </select>
+            <h3 class="font-bold text-white text-base">Rigol DS1054Z Oscilloscope</h3>
+            <p class="text-xs text-gray-400">EF-3 Electronics Lab &bull; Dr. Ritesh Kushwaha</p>
           </div>
 
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Image URL (Optional)</label>
-            <input type="url" id="itemImageUrl" placeholder="https://images.unsplash.com/..." class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Contact / Hostel Block</label>
-            <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
-          </div>
-
-          <button type="submit" class="w-full bg-emerald-400 hover:bg-emerald-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-xs tracking-wider uppercase">
-            Publish Listing
+          <button onclick="requestItem('Rigol DS1054Z Oscilloscope', 'EF-3 Electronics Lab', 85, '+91 98123 45678')" class="w-full bg-brand-accent text-brand-dark font-bold text-xs py-2.5 rounded-xl cursor-pointer">
+            Reserve Item
           </button>
-        </form>
-      </section>
-
-      <!-- Right Column: Live Feed -->
-      <section class="md:col-span-2 space-y-4">
-        <div class="flex justify-between items-center bg-[#111816] px-6 py-4 rounded-2xl neon-border">
-          <h3 class="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
-            <span class="text-amber-400">🔥</span> Campus Gear Catalogue Feed
-          </h3>
-          <span id="itemCount" class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full neon-border">0 items</span>
         </div>
+      </div>
 
-        <div id="listingsContainer" class="space-y-3">
-          <div class="bg-[#111816] p-8 rounded-3xl neon-border text-center">
-            <p class="text-slate-500 text-xs">Syncing campus catalogue...</p>
-          </div>
-        </div>
-      </section>
+    </div>
+  </section>
 
-    </main>
+  <!-- Inventory Catalog Grid -->
+  <section id="catalog" class="px-4 max-w-7xl mx-auto mb-16">
+    <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Campus Gear Catalogue</h2>
+    <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+  </section>
+
+  <!-- MODALS -->
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 relative">
+      <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
+      <h3 class="font-bold text-white text-lg mb-3">CU Institutional Auth</h3>
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+        <input type="text" id="authName" required placeholder="Full Name (e.g. Amit Kumar)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="email" id="authEmail" required placeholder="26bet10149@cumail.in" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="text" id="authUID" required placeholder="UID (26BET10149)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Sign In</button>
+      </form>
+    </div>
   </div>
 
+  <!-- BOOKING MODAL -->
+  <div id="bookingModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
+      <button onclick="closeModal('bookingModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
+      <h3 class="font-bold text-white text-base mb-3">Reserve Equipment</h3>
+      <form onsubmit="handleConfirmBooking(event)" class="space-y-3">
+        <input type="text" id="bookTitle" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input type="text" id="bookLocation" readonly class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-gray-300" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Confirm & Unmask Contact</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIST GEAR MODAL -->
+  <div id="addModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-md rounded-3xl p-6 relative">
+      <button onclick="closeModal('addModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
+      <h3 class="font-bold text-white text-base mb-3">List Campus Gear</h3>
+      <form onsubmit="handleNewListing(event)" class="space-y-3">
+        <input required id="newTitle" type="text" placeholder="Equipment Title" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input required id="newLoc" type="text" placeholder="Location (e.g. UIE Lab 302)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <input required id="newPhone" type="tel" placeholder="Phone (+91 98765 43210)" class="w-full bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-xs text-white" />
+        <button type="submit" class="w-full bg-brand-accent text-brand-dark font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ACTIVE LOANS DRAWER -->
+  <div id="loansDrawer" class="fixed inset-0 bg-black/80 z-50 flex justify-end hidden">
+    <div class="bg-brand-surface border-l border-brand-border w-full max-w-md h-full p-6 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-brand-border">
+          <h3 class="font-bold text-white text-base">Active Loans</h3>
+          <button onclick="closeLoansDrawer()" class="text-gray-400 cursor-pointer">✕</button>
+        </div>
+        <div id="activeLoansList" class="mt-4 space-y-2"></div>
+      </div>
+      <button onclick="closeLoansDrawer()" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs cursor-pointer">Close</button>
+    </div>
+  </div>
+
+  <!-- TRUST SCORE MODAL -->
+  <div id="trustModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-brand-surface border border-brand-border w-full max-w-sm rounded-3xl p-6 text-center relative">
+      <button onclick="closeModal('trustModal')" class="absolute top-4 right-4 text-gray-400 cursor-pointer">✕</button>
+      <div class="text-4xl font-black text-brand-accent mb-2" id="modalTrustScoreNum">98</div>
+      <div class="text-xs text-white font-bold mb-4">Tier 3: Full Campus Clearance</div>
+      <button onclick="closeModal('trustModal')" class="w-full bg-brand-card text-white py-2 rounded-xl text-xs cursor-pointer">Close</button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAqgRTNJVl-uBblhCN-aHwWZgxoiM4HIKY",
-      authDomain: "cu-sharehub-b081d.firebaseapp.com",
-      databaseURL: "https://cu-sharehub-b081d-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "cu-sharehub-b081d",
-      storageBucket: "cu-sharehub-b081d.firebasestorage.app",
-      messagingSenderId: "431828686017",
-      appId: "1:431828686017:web:804dcfae718c491b29b040"
-    };
+    var currentUser = JSON.parse(localStorage.getItem('cu_auth_user')) || null;
+    var userTrustScore = parseInt(localStorage.getItem('cu_trust_score')) || 98;
+    var catalog = JSON.parse(localStorage.getItem('cu_catalog')) || [
+      { id: 1, title: "Rigol DS1054Z 50MHz DSO", location: "UIE Lab 302", phone: "+91 98123 45678", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" },
+      { id: 2, title: "Arduino Uno R3 Ultimate Kit", location: "NC-3 Hostel Block", phone: "+91 98765 12345", img: "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=400&q=80" },
+      { id: 3, title: "Canon EOS 200D DSLR Kit", location: "Apex Media Society", phone: "+91 99887 76655", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80" },
+      { id: 4, title: "Creality Ender 3D Printer", location: "Innovation Cell EF-3", phone: "+91 97654 32109", img: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80" }
+    ];
+    var activeLoans = JSON.parse(localStorage.getItem('cu_loans')) || [];
+    var currentSelectedPhone = "";
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    const loginScreen = document.getElementById('loginScreen');
-    const appDashboard = document.getElementById('appDashboard');
-    const loginForm = document.getElementById('loginForm');
-    const navUserInfo = document.getElementById('navUserInfo');
-
-    // Default core devices with working image URLs[span_1](start_span)[span_1](end_span)
-    const defaultListings = {
-      "default_1": {
-        user: "Dr. Ritesh Kumar [Lab In-charge]",
-        name: "Rigol 100MHz Digital Oscilloscope",
-        category: "Lab Instruments",
-        contact: "UIE Block 3 / Ext: 4021",
-        status: "Available",
-        reservedBy: "",
-        imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
-        timestamp: 1710000001000
-      },
-      "default_2": {
-        user: "Rahul Sharma [26BET10149]",
-        name: "Arduino Mega & IoT Sensor Kit",
-        category: "IoT & Robotics",
-        contact: "Hostel Block A / 9876543210",
-        status: "Available",
-        reservedBy: "",
-        imageUrl: "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=600&q=80",
-        timestamp: 1710000002000
-      },
-      "default_3": {
-        user: "Robotics Club CU",
-        name: "Sony Alpha DSLR Camera (Event Kit)",
-        category: "Media & Club",
-        contact: "Student Activity Centre",
-        status: "Available",
-        reservedBy: "",
-        imageUrl: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
-        timestamp: 1710000003000
-      },
-      "default_4": {
-        user: "Aman Verma [26BET10185]",
-        name: "Creality Ender-3 Pro 3D Printer",
-        category: "3D & Prototyping",
-        contact: "Mech Workshop / Block B",
-        status: "Available",
-        reservedBy: "",
-        imageUrl: "https://images.unsplash.com/photo-1631548624177-cb67f2269a8b?auto=format&fit=crop&w=600&q=80",
-        timestamp: 1710000004000
-      }
-    };
-
-    // Check localStorage login session
-    const savedUser = localStorage.getItem('cu_user');
-    const savedUid = localStorage.getItem('cu_uid');
-    if (savedUser && savedUid) {
-      showDashboard(savedUser, savedUid);
+    function openModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
     }
 
-    // University Login Validation Form
-    loginForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const name = document.getElementById('loginName').value.trim();
-      const uid = document.getElementById('loginUid').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-
-      if (!email.endsWith('@cuchd.in') && !email.endsWith('@cumail.in')) {
-        alert('Access Denied: Sirf official University Mail ID (@cuchd.in ya @cumail.in) hi allowed hai!');
-        return;
-      }
-
-      localStorage.setItem('cu_user', name);
-      localStorage.setItem('cu_uid', uid);
-      localStorage.setItem('cu_email', email);
-
-      showDashboard(name, uid);
-    });
-
-    function showDashboard(name, uid) {
-      loginScreen.classList.add('hidden');
-      appDashboard.classList.remove('hidden');
-      navUserInfo.innerText = `${name} (${uid})`;
+    function closeModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
     }
 
-    // Logout Function
-    function logout() {
-      localStorage.removeItem('cu_user');
-      localStorage.removeItem('cu_uid');
-      localStorage.removeItem('cu_email');
-      location.reload();
+    function openLoansDrawer() {
+      updateLoansUI();
+      openModal('loansDrawer');
     }
 
-    // Publish New Equipment Listing
-    const itemForm = document.getElementById('itemForm');
-    itemForm.addEventListener('submit', function(e) {
-      e.preventDefault();
+    function closeLoansDrawer() {
+      closeModal('loansDrawer');
+    }
 
-      const currentUserName = localStorage.getItem('cu_user');
-      const currentUserUid = localStorage.getItem('cu_uid');
-      const currentUserEmail = localStorage.getItem('cu_email');
+    function openTrustModal() {
+      var scoreNum = document.getElementById('modalTrustScoreNum');
+      if (scoreNum) scoreNum.innerText = userTrustScore;
+      openModal('trustModal');
+    }
 
-      if (!currentUserName) {
-        alert('Session expired. Please login again.');
-        logout();
-        return;
+    function maskPhoneNumber(phone) {
+      if (!phone) return "+91 ••••• •••••";
+      var cleaned = phone.replace(/\s+/g, '');
+      if (cleaned.length >= 10) {
+        return cleaned.substring(0, 5) + " •••••";
       }
+      return "+91 98••••••42";
+    }
 
-      const name = document.getElementById('itemName').value;
-      const category = document.getElementById('itemCategory').value;
-      const imageUrl = document.getElementById('itemImageUrl').value.trim() || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
-      const contact = document.getElementById('itemContact').value;
+    function updateAuthHeaderUI() {
+      var container = document.getElementById('authHeaderWidget');
+      if (!container) return;
 
-      db.ref('listings').push({
-        user: `${currentUserName} [${currentUserUid}]`,
-        email: currentUserEmail,
-        name: name,
-        category: category,
-        imageUrl: imageUrl,
-        contact: contact,
-        status: "Available",
-        reservedBy: "",
-        timestamp: Date.now()
-      }).then(() => {
-        itemForm.reset();
-      }).catch((error) => {
-        alert('Error: ' + error.message);
-      });
-    });
-
-    // Reserve Device Function
-    function reserveItem(key) {
-      const currentUserName = localStorage.getItem('cu_user');
-      const currentUserUid = localStorage.getItem('cu_uid');
-
-      if (!currentUserName) {
-        alert('Please login first to reserve devices.');
-        return;
-      }
-
-      if (key.startsWith('default_')) {
-        db.ref('listings/' + key).set({
-          ...defaultListings[key],
-          status: "Reserved",
-          reservedBy: `${currentUserName} (${currentUserUid})`
-        }).then(() => {
-          alert('Success: Device successfully reserved for your project!');
-        });
+      if (currentUser) {
+        container.innerHTML = 
+          '<div class="flex items-center gap-2 bg-brand-card border border-brand-border rounded-full py-1 px-3">' +
+            '<span class="text-xs text-white font-bold">' + currentUser.name + '</span>' +
+            '<button onclick="handleLogout()" class="text-red-400 text-xs hover:underline cursor-pointer">Logout</button>' +
+          '</div>';
       } else {
-        db.ref('listings/' + key).update({
-          status: "Reserved",
-          reservedBy: `${currentUserName} (${currentUserUid})`
-        }).then(() => {
-          alert('Success: Device successfully reserved for your project!');
+        container.innerHTML = 
+          '<button onclick="openModal(\'authModal\')" class="bg-brand-accent text-brand-dark font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer">' +
+            '<i data-lucide="lock" class="w-3.5 h-3.5"></i>' +
+            '<span>Sign In</span>' +
+          '</button>';
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      var name = document.getElementById('authName').value;
+      var email = document.getElementById('authEmail').value;
+      var uid = document.getElementById('authUID').value;
+      
+      currentUser = { name: name, email: email, uid: uid };
+      localStorage.setItem('cu_auth_user', JSON.stringify(currentUser));
+      
+      updateAuthHeaderUI();
+      closeModal('authModal');
+      alert("Signed in successfully as " + name + "!");
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('cu_auth_user');
+      updateAuthHeaderUI();
+    }
+
+    function renderCatalog() {
+      var grid = document.getElementById('catalogGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      catalog.forEach(function(item) {
+        var maskedPhone = maskPhoneNumber(item.phone);
+        var card = document.createElement('div');
+        card.className = "bg-brand-surface rounded-2xl border border-brand-border p-4 flex flex-col justify-between";
+        card.innerHTML = 
+          '<div>' +
+            '<img src="' + item.img + '" class="w-full h-36 object-cover rounded-xl mb-3" />' +
+            '<h4 class="font-bold text-white text-sm">' + item.title + '</h4>' +
+            '<p class="text-xs text-gray-400 mt-1">' + item.location + '</p>' +
+            '<div class="mt-2 text-[11px] bg-brand-dark/50 p-2 rounded-lg border border-brand-border/50 flex items-center justify-between text-gray-400">' +
+              '<span>Contact:</span>' +
+              '<span class="font-mono text-gray-300 font-bold">' + maskedPhone + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<button onclick="requestItem(\'' + item.title.replace(/'/g, "\\'") + '\', \'' + item.location + '\', 85, \'' + item.phone + '\')" class="mt-3 bg-brand-accent text-brand-dark font-bold text-xs py-2 rounded-lg cursor-pointer">' +
+            'Reserve' +
+          '</button>';
+        grid.appendChild(card);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function requestItem(title, location, trustReq, phone) {
+      document.getElementById('bookTitle').value = title;
+      document.getElementById('bookLocation').value = location;
+      currentSelectedPhone = phone;
+      openModal('bookingModal');
+    }
+
+    function handleConfirmBooking(e) {
+      e.preventDefault();
+      var title = document.getElementById('bookTitle').value;
+      activeLoans.unshift({ id: Date.now(), title: title, phone: currentSelectedPhone });
+      localStorage.setItem('cu_loans', JSON.stringify(activeLoans));
+      updateLoansUI();
+      closeModal('bookingModal');
+      alert("Booking confirmed! Unmasked Owner Phone: " + currentSelectedPhone);
+    }
+
+    function handleNewListing(e) {
+      e.preventDefault();
+      var title = document.getElementById('newTitle').value;
+      var loc = document.getElementById('newLoc').value;
+      var phone = document.getElementById('newPhone').value;
+      catalog.unshift({ id: Date.now(), title: title, location: loc, phone: phone, img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" });
+      localStorage.setItem('cu_catalog', JSON.stringify(catalog));
+      renderCatalog();
+      closeModal('addModal');
+      alert("Gear listed successfully!");
+    }
+
+    function updateLoansUI() {
+      var list = document.getElementById('activeLoansList');
+      var badge = document.getElementById('activeLoansCountBadge');
+      if (badge) badge.innerText = activeLoans.length;
+      if (!list) return;
+      if (activeLoans.length === 0) {
+        list.innerHTML = '<div class="text-xs text-gray-400">No active loans</div>';
+      } else {
+        var html = '';
+        activeLoans.forEach(function(l) {
+          html += '<div class="p-3 bg-brand-card rounded-xl text-xs text-white"><div><strong>' + l.title + '</strong></div><div class="text-brand-accent">Phone: ' + l.phone + '</div></div>';
         });
+        list.innerHTML = html;
       }
     }
 
-    // Real-time Database Sync Listener with Permanent Default Merge
-    const listingsContainer = document.getElementById('listingsContainer');
-    const itemCount = document.getElementById('itemCount');
-
-    db.ref('listings').on('value', (snapshot) => {
-      const dbData = snapshot.val() || {};
+    document.addEventListener('DOMContentLoaded', function() {
+      var trustEl = document.getElementById('navTrustScore');
+      if (trustEl) trustEl.innerText = userTrustScore;
       
-      const combinedData = { ...defaultListings, ...dbData };
-
-      listingsContainer.innerHTML = '';
-      const keys = Object.keys(combinedData).reverse();
-      itemCount.innerText = `${keys.length} items`;
-
-      keys.forEach(key => {
-        const item = combinedData[key];
-        const itemStatus = item.status || "Available";
-        const isReserved = itemStatus === "Reserved";
-        const itemCategory = item.category || "General";
-        const itemName = item.name || "Unnamed Resource";
-        const itemUser = item.user || "Campus User";
-        const itemContact = item.contact || "N/A";
-        const itemImg = item.imageUrl || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80";
-        
-        listingsContainer.innerHTML += `
-          <div class="bg-[#111816] p-5 rounded-3xl neon-border ${isReserved ? 'bg-amber-500/5' : 'hover:border-emerald-500/60'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
-              <img src="${itemImg}" alt="${itemName}" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'" class="w-full sm:w-24 h-24 object-cover rounded-2xl neon-border flex-shrink-0">
-              <div class="space-y-1.5">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 neon-border">${itemCategory}</span>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isReserved ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-blue-500/10 text-blue-400 border border-blue-500/30'}">${itemStatus}</span>
-                  <span class="text-[11px] text-slate-500">by ${itemUser}</span>
-                </div>
-                <h4 class="font-bold text-white text-sm md:text-base">${itemName}</h4>
-                <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${itemContact}</span></p>
-                ${isReserved && item.reservedBy ? `<p class="text-[11px] text-amber-400 font-medium">Reserved by: ${item.reservedBy}</p>` : ''}
-              </div>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto flex-shrink-0">
-              ${!isReserved ? `
-                <button onclick="reserveItem('${key}')" class="text-xs font-bold bg-emerald-400 hover:bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl transition duration-200 text-center shadow-md">
-                  Reserve
-                </button>
-              ` : ''}
-              <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 neon-border px-4 py-2.5 rounded-xl transition duration-200 text-center">
-                Get Contact
-              </button>
-            </div>
-          </div>
-        `;
-      });
+      updateAuthHeaderUI();
+      renderCatalog();
+      updateLoansUI();
+      if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
