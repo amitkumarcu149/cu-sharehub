@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CU ShareHub - Campus Resource Sharing Platform</title>
+  <title>CU ShareHub - Campus Secure Peer Sharing</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,113 +13,131 @@
   <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f0e; color: #f1f5f9; }
+    .neon-glow { box-shadow: 0 0 25px rgba(34, 197, 94, 0.15); }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800">
+<body class="min-h-screen selection:bg-emerald-500 selection:text-black">
 
-  <!-- 1. LOGIN SCREEN (Hidden if authenticated) -->
-  <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-indigo-900 via-slate-900 to-slate-950">
-    <div class="max-w-md w-full bg-white/10 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/20 text-center space-y-6">
-      <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg shadow-indigo-500/30">
+  <!-- 1. UNIVERSITY LOGIN GATE (Visible until login) -->
+  <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4 bg-[#070a09]">
+    <div class="max-w-md w-full bg-[#111816] p-8 rounded-3xl shadow-2xl border border-emerald-500/20 text-center space-y-6 neon-glow">
+      <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-emerald-500/30">
         🎓
       </div>
       <div>
         <h1 class="text-2xl font-bold text-white tracking-wide">CU ShareHub</h1>
-        <p class="text-xs text-indigo-200 mt-2">Campus-scoped peer-to-peer resource & lab equipment sharing network.</p>
+        <p class="text-xs text-slate-400 mt-2">Enter your university credentials to access the campus peer sharing network.</p>
       </div>
-      <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-slate-800 font-semibold py-3 px-4 rounded-xl shadow-md transition duration-200 text-sm">
-        <svg class="w-5 h-5" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        Sign in with University Google ID
-      </button>
-      <p class="text-[11px] text-slate-400">Restricted to verified university domain accounts only.</p>
+
+      <form id="loginForm" class="space-y-4 text-left">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Full Name</label>
+          <input type="text" id="loginName" required placeholder="e.g. Amit Kumar" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">University UID</label>
+          <input type="text" id="loginUid" required placeholder="e.g. 26BET10149" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">University Email ID</label>
+          <input type="email" id="loginEmail" required placeholder="e.g. user@cuchd.in" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <button type="submit" class="w-full bg-emerald-400 hover:bg-emerald-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-xs tracking-wider uppercase">
+          Verify & Enter Portal
+        </button>
+      </form>
+      <p class="text-[11px] text-emerald-500/70 font-medium">🔒 Restricted to Chandigarh University Students Only</p>
     </div>
   </div>
 
   <!-- 2. MAIN DASHBOARD (Initially Hidden) -->
   <div id="appDashboard" class="hidden min-h-screen pb-12">
     <!-- Navbar -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-      <div class="max-w-5xl mx-auto px-6 py-3.5 flex justify-between items-center">
+    <nav class="bg-[#111816]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-lg shadow-sm">🎓</div>
+          <div class="w-10 h-10 bg-emerald-500 text-slate-950 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg shadow-emerald-500/20">CU</div>
           <div>
-            <h1 class="text-base font-bold text-slate-900 leading-tight">CU ShareHub</h1>
-            <p class="text-[11px] text-slate-500 font-medium">Peer-to-Peer Campus Network</p>
+            <h1 class="text-sm font-bold tracking-wider text-white">CU SHAREHUB</h1>
+            <p id="navUserInfo" class="text-[10px] text-emerald-400 font-semibold"></p>
           </div>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
-            <img id="userAvatar" src="" alt="User" class="w-6 h-6 rounded-full object-cover">
-            <span id="userNameDisplay" class="text-xs font-semibold text-slate-700"></span>
-          </div>
-          <button onclick="logout()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-3.5 py-2 rounded-xl border border-rose-200 transition">
-            Logout
-          </button>
-        </div>
+        <button onclick="logout()" class="text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-semibold px-3.5 py-2 rounded-xl border border-rose-500/20 transition">
+          Logout
+        </button>
       </div>
     </nav>
 
-    <!-- Content Container -->
-    <main class="max-w-5xl mx-auto px-4 mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Hero Section -->
+    <header class="max-w-6xl mx-auto px-6 pt-10 pb-6">
+      <div class="bg-gradient-to-r from-[#111816] to-[#15221d] border border-emerald-500/20 rounded-3xl p-8 relative overflow-hidden shadow-2xl neon-glow">
+        <span class="inline-block text-[11px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30 mb-4">
+          Verified Campus Network
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+          Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
+        </h2>
+        <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
+          Reserve high-end lab equipment safely. Contact numbers and personal identifiers are fully managed within university credentials.
+        </p>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-8">
       
-      <!-- Left Column: Form -->
-      <section class="md:col-span-1 bg-white p-6 rounded-2xl shadow-xs border border-slate-200 h-fit">
+      <!-- Left Column: Add Resource Form -->
+      <section class="md:col-span-1 bg-[#111816] p-6 rounded-3xl border border-slate-800 h-fit shadow-xl">
         <div class="flex items-center justify-between mb-5">
-          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-            <span class="text-indigo-600">➕</span> List Equipment
-          </h2>
-          <span class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-md border border-emerald-200">Live Sync ⚡</span>
+          <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+            <span>➕</span> List Equipment
+          </h3>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-1 rounded-md border border-emerald-500/20">Live Sync ⚡</span>
         </div>
         
         <form id="itemForm" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Resource Name</label>
-            <input type="text" id="itemName" required placeholder="e.g. Oscilloscope / Arduino Kit" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-600 transition bg-slate-50/50">
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Resource Name</label>
+            <input type="text" id="itemName" required placeholder="e.g. Rigol Oscilloscope / Arduino Kit" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
-            <select id="itemCategory" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-600 transition bg-slate-50/50">
-              <option value="Lab Equipment">🔬 Lab Equipment</option>
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
+            <select id="itemCategory" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+              <option value="Lab Instruments">🔬 Lab Instruments</option>
+              <option value="IoT & Robotics">⚡ IoT & Robotics</option>
+              <option value="Media & Club">📷 Media & Club</option>
+              <option value="3D & Prototyping">🖨️ 3D & Prototyping</option>
               <option value="Books & Notes">📚 Books & Notes</option>
-              <option value="Electronics">💻 Electronics / IoT</option>
-              <option value="Instruments">🎸 Instruments</option>
-              <option value="Others">📦 Others</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Contact / Hostel Block</label>
-            <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-600 transition bg-slate-50/50">
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Contact / Hostel Block</label>
+            <input type="text" id="itemContact" required placeholder="e.g. 9876543210 / Block A" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
           </div>
 
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-indigo-200 transition duration-200 text-xs tracking-wide">
+          <button type="submit" class="w-full bg-emerald-400 hover:bg-emerald-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-xs tracking-wider uppercase">
             Publish Listing
           </button>
         </form>
       </section>
 
-      <!-- Right Column: Feed -->
-      <section class="md:col-span-2">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-            <span class="text-amber-500">🔥</span> Campus Available Feed
-          </h2>
-          <span id="itemCount" class="text-xs text-slate-500 font-medium bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">0 items</span>
+      <!-- Right Column: Live Feed -->
+      <section class="md:col-span-2 space-y-4">
+        <div class="flex justify-between items-center bg-[#111816] px-6 py-4 rounded-2xl border border-slate-800">
+          <h3 class="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
+            <span class="text-amber-400">🔥</span> Campus Gear Catalogue Feed
+          </h3>
+          <span id="itemCount" class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">0 items</span>
         </div>
 
         <div id="listingsContainer" class="space-y-3">
-          <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center shadow-2xs">
-            <p class="text-slate-400 text-xs">Loading secure campus listings...</p>
+          <div class="bg-[#111816] p-8 rounded-3xl border border-slate-800 text-center">
+            <p class="text-slate-500 text-xs">Connecting to secure campus database...</p>
           </div>
         </div>
       </section>
@@ -141,63 +159,77 @@
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.database();
 
     const loginScreen = document.getElementById('loginScreen');
     const appDashboard = document.getElementById('appDashboard');
-    const userNameDisplay = document.getElementById('userNameDisplay');
-    const userAvatar = document.getElementById('userAvatar');
+    const loginForm = document.getElementById('loginForm');
+    const navUserInfo = document.getElementById('navUserInfo');
 
-    // Google Sign-In Function
-    function loginWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch((error) => {
-        alert('Login Error: ' + error.message);
-      });
+    // Check if user is already logged in via localStorage
+    const savedUser = localStorage.getItem('cu_user');
+    const savedUid = localStorage.getItem('cu_uid');
+    if (savedUser && savedUid) {
+      showDashboard(savedUser, savedUid);
+    }
+
+    // Login Form Submit with Domain Validation
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('loginName').value.trim();
+      const uid = document.getElementById('loginUid').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
+
+      // Validate University Domain
+      if (!email.endsWith('@cuchd.in') && !email.endsWith('@cumail.in')) {
+        alert('Access Denied: Kripya apni official University Mail ID (@cuchd.in ya @cumail.in) hi use karein!');
+        return;
+      }
+
+      // Save to localStorage
+      localStorage.setItem('cu_user', name);
+      localStorage.setItem('cu_uid', uid);
+      localStorage.setItem('cu_email', email);
+
+      showDashboard(name, uid);
+    });
+
+    function showDashboard(name, uid) {
+      loginScreen.classList.add('hidden');
+      appDashboard.classList.remove('hidden');
+      navUserInfo.innerText = `${name} (${uid})`;
     }
 
     // Logout Function
     function logout() {
-      auth.signOut();
+      localStorage.removeItem('cu_user');
+      localStorage.removeItem('cu_uid');
+      localStorage.removeItem('cu_email');
+      location.reload();
     }
 
-    // Monitor Auth State with University Domain Restriction
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // University email domain restriction (Aap apni zaroorat ke mutabik change kar sakte hain)
-        const allowedDomain = "@cuchd.in"; 
-        
-        if (user.email.endsWith(allowedDomain)) {
-          loginScreen.classList.add('hidden');
-          appDashboard.classList.remove('hidden');
-          userNameDisplay.innerText = user.displayName;
-          userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
-        } else {
-          alert('Access Denied: Sirf Chandigarh University ki official mail ID allowed hai!');
-          auth.signOut();
-        }
-      } else {
-        loginScreen.classList.remove('hidden');
-        appDashboard.classList.add('hidden');
-      }
-    });
-
-    // Form submission logic
+    // Form submission logic for items
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const currentUser = auth.currentUser;
-      if (!currentUser) return;
+      const currentUserName = localStorage.getItem('cu_user');
+      const currentUserUid = localStorage.getItem('cu_uid');
+      const currentUserEmail = localStorage.getItem('cu_email');
+
+      if (!currentUserName) {
+        alert('Session expired. Please login again.');
+        logout();
+        return;
+      }
 
       const name = document.getElementById('itemName').value;
       const category = document.getElementById('itemCategory').value;
       const contact = document.getElementById('itemContact').value;
 
       db.ref('listings').push({
-        user: currentUser.displayName,
-        email: currentUser.email,
+        user: `${currentUserName} [${currentUserUid}]`,
+        email: currentUserEmail,
         name: name,
         category: category,
         contact: contact,
@@ -224,16 +256,16 @@
         keys.forEach(key => {
           const item = data[key];
           listingsContainer.innerHTML += `
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-              <div class="space-y-1">
+            <div class="bg-[#111816] p-5 rounded-3xl border border-slate-800 hover:border-emerald-500/40 transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
+              <div class="space-y-1.5">
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">${item.category}</span>
-                  <span class="text-[11px] text-slate-400">by ${item.user}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.category}</span>
+                  <span class="text-[11px] text-slate-500">by ${item.user}</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">${item.name}</h3>
-                <p class="text-xs text-slate-500">Contact/Hostel: <span class="font-semibold text-slate-700">${item.contact}</span></p>
+                <h4 class="font-bold text-white text-sm md:text-base">${item.name}</h4>
+                <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${item.contact}</span></p>
               </div>
-              <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact details copied to clipboard!');" class="w-full sm:w-auto text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl transition">
+              <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200">
                 Get Contact
               </button>
             </div>
@@ -242,8 +274,8 @@
       } else {
         itemCount.innerText = `0 items`;
         listingsContainer.innerHTML = `
-          <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center shadow-2xs">
-            <p class="text-slate-400 text-xs">No equipment or resources listed yet.</p>
+          <div class="bg-[#111816] p-8 rounded-3xl border border-slate-800 text-center">
+            <p class="text-slate-500 text-xs">No equipment listed yet. Be the first to share!</p>
           </div>
         `;
       }
