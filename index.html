@@ -72,7 +72,7 @@
       </div>
     </nav>
 
-    <!-- Creative Hero Section with Student Study & Lab Theme -->
+    <!-- Creative Hero Section -->
     <header class="max-w-6xl mx-auto px-6 pt-8 pb-6">
       <div class="bg-gradient-to-r from-[#111816] via-[#152620] to-[#0f1c18] neon-border rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-2xl neon-glow">
         <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -86,7 +86,7 @@
               Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
             </h2>
             <p class="text-xs md:text-sm text-slate-300 max-w-lg leading-relaxed">
-              Collaborate, list, discover, and reserve lab instruments or project resources securely with real-time sync across university peers[span_1](start_span)[span_1](end_span).
+              Collaborate, list, discover, and reserve lab instruments or project resources securely with real-time sync across university peers[span_0](start_span)[span_0](end_span).
             </p>
             <div class="flex flex-wrap gap-3 pt-2">
               <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🔬 Lab Equipment</span>
@@ -192,7 +192,7 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Default core devices with images[span_2](start_span)[span_2](end_span)
+    // Default core devices with working image URLs[span_1](start_span)[span_1](end_span)
     const defaultListings = {
       "default_1": {
         user: "Dr. Ritesh Kumar [Lab In-charge]",
@@ -231,7 +231,7 @@
         contact: "Mech Workshop / Block B",
         status: "Available",
         reservedBy: "",
-        imageUrl: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
+        imageUrl: "https://images.unsplash.com/photo-1631548624177-cb67f2269a8b?auto=format&fit=crop&w=600&q=80",
         timestamp: 1710000004000
       }
     };
@@ -367,7 +367,7 @@
         listingsContainer.innerHTML += `
           <div class="bg-[#111816] p-5 rounded-3xl neon-border ${isReserved ? 'bg-amber-500/5' : 'hover:border-emerald-500/60'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
-              <img src="${itemImg}" alt="${itemName}" class="w-full sm:w-24 h-24 object-cover rounded-2xl neon-border flex-shrink-0">
+              <img src="${itemImg}" alt="${itemName}" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'" class="w-full sm:w-24 h-24 object-cover rounded-2xl neon-border flex-shrink-0">
               <div class="space-y-1.5">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 neon-border">${itemCategory}</span>
