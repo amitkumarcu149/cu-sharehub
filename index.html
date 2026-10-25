@@ -86,7 +86,7 @@
               Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
             </h2>
             <p class="text-xs md:text-sm text-slate-300 max-w-lg leading-relaxed">
-              Collaborate, list, discover, and reserve lab instruments securely with real-time sync and built-in student trust scoring[span_0](start_span)[span_0](end_span).
+              Collaborate, list, discover, and reserve lab instruments securely with real-time sync, trust scoring, and unlist controls[span_0](start_span)[span_0](end_span).
             </p>
             <div class="flex flex-wrap gap-3 pt-2">
               <span class="text-[11px] bg-[#1a2622] text-emerald-400 px-3 py-1.5 rounded-xl neon-border font-medium">🛡️ Trust Score: 98%</span>
@@ -280,7 +280,7 @@
       location.reload();
     }
 
-    // Publish New Equipment Listing with Automatic Trust Score
+    // Publish New Equipment Listing
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -301,6 +301,7 @@
       const contact = document.getElementById('itemContact').value;
 
       db.ref('listings').push({
+        uid: currentUserUid,
         user: `${currentUserName} [${currentUserUid}]`,
         trustScore: "95% Trust (Verified)",
         email: currentUserEmail,
@@ -347,12 +348,24 @@
       }
     }
 
+    // Unlist / Remove Item Function
+    function unlistItem(key) {
+      if (confirm('Kya aap waqai is device ko unlist (remove) karna chahte hain?')) {
+        db.ref('listings/' + key).remove().then(() => {
+          alert('Success: Device successfully unlisted from feed!');
+        }).catch((error) => {
+          alert('Error: ' + error.message);
+        });
+      }
+    }
+
     // Real-time Database Sync Listener with Trust Score & Default Merge
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
     db.ref('listings').on('value', (snapshot) => {
       const dbData = snapshot.val() || {};
+      const currentUserUid = localStorage.getItem('cu_uid');
       
       const combinedData = { ...defaultListings, ...dbData };
 
@@ -371,6 +384,9 @@
         const itemContact = item.contact || "N/A";
         const itemImg = item.imageUrl || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80";
         
+        // Check if current user is the owner of this listing
+        const isMyListing = item.uid === currentUserUid || (item.user && item.user.includes(currentUserUid));
+
         listingsContainer.innerHTML += `
           <div class="bg-[#111816] p-5 rounded-3xl neon-border ${isReserved ? 'bg-amber-500/5' : 'hover:border-emerald-500/60'} transition duration-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 shadow-lg">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
@@ -397,6 +413,11 @@
               <button onclick="navigator.clipboard.writeText('${itemContact}'); alert('Contact details copied!');" class="text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 neon-border px-4 py-2.5 rounded-xl transition duration-200 text-center">
                 Get Contact
               </button>
+              ${isMyListing && !key.startsWith('default_') ? `
+                <button onclick="unlistItem('${key}')" class="text-xs font-bold bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/30 px-4 py-2.5 rounded-xl transition duration-200 text-center">
+                  Unlist
+                </button>
+              ` : ''}
             </div>
           </div>
         `;
