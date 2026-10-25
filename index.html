@@ -21,7 +21,7 @@
 </head>
 <body class="min-h-screen selection:bg-emerald-500 selection:text-black">
 
-  <!-- 1. UNIVERSITY LOGIN GATE (Visible until login) -->
+  <!-- 1. UNIVERSITY LOGIN GATE -->
   <div id="loginScreen" class="flex items-center justify-center min-h-screen px-4 bg-[#070a09]">
     <div class="max-w-md w-full bg-[#111816] p-8 rounded-3xl shadow-2xl border border-emerald-500/20 text-center space-y-6 neon-glow">
       <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-emerald-500/30">
@@ -29,7 +29,7 @@
       </div>
       <div>
         <h1 class="text-2xl font-bold text-white tracking-wide">CU ShareHub</h1>
-        <p class="text-xs text-slate-400 mt-2">Enter your university credentials to access the campus peer sharing network.</p>
+        <p class="text-xs text-slate-400 mt-2">Enter your university credentials to access the peer sharing network.</p>
       </div>
 
       <form id="loginForm" class="space-y-4 text-left">
@@ -53,7 +53,7 @@
     </div>
   </div>
 
-  <!-- 2. MAIN DASHBOARD (Initially Hidden) -->
+  <!-- 2. MAIN DASHBOARD -->
   <div id="appDashboard" class="hidden min-h-screen pb-12">
     <!-- Navbar -->
     <nav class="bg-[#111816]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
@@ -75,13 +75,13 @@
     <header class="max-w-6xl mx-auto px-6 pt-10 pb-6">
       <div class="bg-gradient-to-r from-[#111816] to-[#15221d] border border-emerald-500/20 rounded-3xl p-8 relative overflow-hidden shadow-2xl neon-glow">
         <span class="inline-block text-[11px] font-bold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30 mb-4">
-          Verified Campus Network
+          Verified Campus Network (BE-IT Project)
         </span>
         <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
           Authenticated <span class="text-emerald-400">Campus Peer Sharing.</span>
         </h2>
         <p class="text-xs md:text-sm text-slate-400 max-w-xl leading-relaxed">
-          Reserve high-end lab equipment safely. Contact numbers and personal identifiers are fully managed within university credentials.
+          Peer-to-peer platform enabling verified university members to list, discover, and exchange lab equipment and project resources without monetary rent.
         </p>
       </div>
     </header>
@@ -101,7 +101,7 @@
         <form id="itemForm" class="space-y-4">
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Resource Name</label>
-            <input type="text" id="itemName" required placeholder="e.g. Rigol Oscilloscope / Arduino Kit" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+            <input type="text" id="itemName" required placeholder="e.g. Function Generator / Soldering Station" class="w-full bg-[#1a2320] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
           </div>
 
           <div>
@@ -137,7 +137,7 @@
 
         <div id="listingsContainer" class="space-y-3">
           <div class="bg-[#111816] p-8 rounded-3xl border border-slate-800 text-center">
-            <p class="text-slate-500 text-xs">Connecting to secure campus database...</p>
+            <p class="text-slate-500 text-xs">Syncing campus catalogue...</p>
           </div>
         </div>
       </section>
@@ -166,27 +166,64 @@
     const loginForm = document.getElementById('loginForm');
     const navUserInfo = document.getElementById('navUserInfo');
 
-    // Check if user is already logged in via localStorage
+    // Default Default 5 Lab Equipment items aligned with PPT
+    const defaultListings = {
+      "default_1": {
+        user: "Dr. Ritesh Kumar [Lab In-charge]",
+        name: "Rigol 100MHz Digital Oscilloscope",
+        category: "Lab Instruments",
+        contact: "UIE Block 3 / Ext: 4021",
+        timestamp: 1710000001000
+      },
+      "default_2": {
+        user: "Rahul Sharma [26BET10149]",
+        name: "Arduino Mega & IoT Sensor Kit",
+        category: "IoT & Robotics",
+        contact: "Hostel Block A / 9876543210",
+        timestamp: 1710000002000
+      },
+      "default_3": {
+        user: "Robotics Club CU",
+        name: "Sony Alpha DSLR Camera (Event Kit)",
+        category: "Media & Club",
+        contact: "Student Activity Centre",
+        timestamp: 1710000003000
+      },
+      "default_4": {
+        user: "Aman Verma [26BET10185]",
+        name: "Creality Ender-3 Pro 3D Printer",
+        category: "3D & Prototyping",
+        contact: "Mech Workshop / Block B",
+        timestamp: 1710000004000
+      },
+      "default_5": {
+        user: "IT Department Library",
+        name: "Data Structures & Algorithms Reference Notes",
+        category: "Books & Notes",
+        contact: "Central Library Desk 4",
+        timestamp: 1710000005000
+      }
+    };
+
+    // Check localStorage login
     const savedUser = localStorage.getItem('cu_user');
     const savedUid = localStorage.getItem('cu_uid');
     if (savedUser && savedUid) {
       showDashboard(savedUser, savedUid);
     }
 
-    // Login Form Submit with Domain Validation
+    // Login Form Submit
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const name = document.getElementById('loginName').value.trim();
       const uid = document.getElementById('loginUid').value.trim();
       const email = document.getElementById('loginEmail').value.trim();
 
-      // Validate University Domain
       if (!email.endsWith('@cuchd.in') && !email.endsWith('@cumail.in')) {
         alert('Access Denied: Kripya apni official University Mail ID (@cuchd.in ya @cumail.in) hi use karein!');
         return;
       }
 
-      // Save to localStorage
       localStorage.setItem('cu_user', name);
       localStorage.setItem('cu_uid', uid);
       localStorage.setItem('cu_email', email);
@@ -208,7 +245,7 @@
       location.reload();
     }
 
-    // Form submission logic for items
+    // Form submission logic
     const itemForm = document.getElementById('itemForm');
     itemForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -241,44 +278,40 @@
       });
     });
 
-    // Real-time listener for listings
+    // Real-time listener for listings with default fallback
     const listingsContainer = document.getElementById('listingsContainer');
     const itemCount = document.getElementById('itemCount');
 
     db.ref('listings').on('value', (snapshot) => {
-      const data = snapshot.val();
+      let data = snapshot.val();
+
+      // If database is empty, use default mock data for instant presentation view
+      if (!data) {
+        data = defaultListings;
+      }
+
       listingsContainer.innerHTML = '';
+      const keys = Object.keys(data).reverse();
+      itemCount.innerText = `${keys.length} items`;
 
-      if (data) {
-        const keys = Object.keys(data).reverse();
-        itemCount.innerText = `${keys.length} items`;
-
-        keys.forEach(key => {
-          const item = data[key];
-          listingsContainer.innerHTML += `
-            <div class="bg-[#111816] p-5 rounded-3xl border border-slate-800 hover:border-emerald-500/40 transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
-              <div class="space-y-1.5">
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.category}</span>
-                  <span class="text-[11px] text-slate-500">by ${item.user}</span>
-                </div>
-                <h4 class="font-bold text-white text-sm md:text-base">${item.name}</h4>
-                <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${item.contact}</span></p>
+      keys.forEach(key => {
+        const item = data[key];
+        listingsContainer.innerHTML += `
+          <div class="bg-[#111816] p-5 rounded-3xl border border-slate-800 hover:border-emerald-500/40 transition duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.category}</span>
+                <span class="text-[11px] text-slate-500">by ${item.user}</span>
               </div>
-              <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200">
-                Get Contact
-              </button>
+              <h4 class="font-bold text-white text-sm md:text-base">${item.name}</h4>
+              <p class="text-xs text-slate-400">Contact / Location: <span class="font-semibold text-slate-200">${item.contact}</span></p>
             </div>
-          `;
-        });
-      } else {
-        itemCount.innerText = `0 items`;
-        listingsContainer.innerHTML = `
-          <div class="bg-[#111816] p-8 rounded-3xl border border-slate-800 text-center">
-            <p class="text-slate-500 text-xs">No equipment listed yet. Be the first to share!</p>
+            <button onclick="navigator.clipboard.writeText('${item.contact}'); alert('Contact details copied!');" class="w-full sm:w-auto text-xs font-bold bg-[#1a2320] hover:bg-emerald-400 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition duration-200">
+              Get Contact
+            </button>
           </div>
         `;
-      }
+      });
     });
   </script>
 </body>
